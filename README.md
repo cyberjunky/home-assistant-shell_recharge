@@ -55,10 +55,10 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ***
 
-[shell_recharge_ev]: https://github.com/cyberjunky/home-assistant_shell_recharge_ev
-[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant_shell_recharge_ev.svg?style=for-the-badge
-[commits]: https://github.com/cyberjunky/home-assistant_shell_recharge_ev/commits/main
-[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant_shell_recharge_ev.svg?style=for-the-badge
+[shell_recharge_ev]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev
+[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
+[commits]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev/commits/main
+[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40cyberjunky-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant_shell_recharge_ev.svg?style=for-the-badge
-[releases]: https://github.com/cyberjunky/home-assistant_shell_recharge_ev/releases
+[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
+[releases]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev/releases
