@@ -5,6 +5,7 @@
 [![License][license-shield]](LICENSE)
 
 ![Project Maintenance][maintenance-shield]
+[![Sponsor][sponsor-shield]][sponsor]
 
 _Integration to integrate with [shell_recharge_ev][shell_recharge_ev]._
 
@@ -62,3 +63,5 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40cyberjunky-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
 [releases]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev/releases
+[sponsor-shield]: https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86
+[sponsor]: https://github.com/sponsors/cyberjunky
