@@ -1,12 +1,12 @@
 {
-  "domain": "integration_blueprint",
-  "name": "Integration blueprint",
+  "domain": "shell_recharge_ev",
+  "name": "Shell Recharge EV",
   "codeowners": [
-    "@ludeeus"
+    "@cyberjunky"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/ludeeus/integration_blueprint",
+  "documentation": "https://github.com/cyberjunky/home-assistant_shell_recharge_ev",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/ludeeus/integration_blueprint/issues",
-  "version": "0.0.0"
+  "issue_tracker": "https://github.com/cyberjunky/home-assistant_shell_recharge_ev/issues",
+  "version": "0.0.1"
 }
