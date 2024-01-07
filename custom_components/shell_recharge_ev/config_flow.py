@@ -50,7 +50,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     try:
         location = await api.location_by_id(data["location_id"])
     except Exception as exc:
-        _LOGGER.exception(f"validate_info failed", exc)
+        _LOGGER.exception(f"validate_info failed: {exc}", exc)
         raise CannotConnect(exc) from exc
 
     if not location:
