@@ -1,6 +1,5 @@
 {
     "name": "Shell Recharge EV",
     "country": "NL",
-    "render_readme": false,
-    "domains": ["sensor"]
+    "render_readme": false
 }
