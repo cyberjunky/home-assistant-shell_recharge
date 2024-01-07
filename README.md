@@ -13,7 +13,6 @@ _Integration to integrate with [shell_recharge_ev][shell_recharge_ev]._
 
 Platform | Description
 -- | --
-`binary_sensor` | Show if charger is available `True` or occupied `False`.
 `sensor` | Contains useful information for charger.
 
 ## Installation
