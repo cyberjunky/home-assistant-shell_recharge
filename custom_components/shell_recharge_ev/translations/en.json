@@ -1,18 +1,20 @@
 {
     "config": {
-        "step": {
-            "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/ludeeus/integration_blueprint",
-                "data": {
-                    "username": "Username",
-                    "password": "Password"
-                }
-            }
+        "abort": {
+            "already_configured": "Device is already configured"
         },
         "error": {
-            "auth": "Username/Password is wrong.",
-            "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "cannot_connect": "Failed to connect",
+            "malformed_location_id": "Malformed LOCATION-ID",
+            "empty_response": "Empty reponse from shellrecharge.com. Either invalid LOCATION-ID or no data for it.",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "location_id": "LOCATION-ID (e.g. 3357677)"
+                }
+            }
         }
     }
 }
