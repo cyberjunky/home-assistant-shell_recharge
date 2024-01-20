@@ -1,0 +1,17 @@
+{
+  "domain": "shell_recharge",
+  "name": "Shell Recharge",
+  "codeowners": [
+    "@cyberjunky"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/cyberjunky/home-assistant_shell_recharge",
+  "integration_type": "device",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/cyberjunky/home-assistant_shell_recharge/issues",
+  "requirements": [
+    "shellrecharge==0.1.8"
+  ],
+  "version": "0.1.4"
+}

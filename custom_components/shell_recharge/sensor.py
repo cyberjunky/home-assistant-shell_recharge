@@ -1,11 +1,11 @@
-"""Sensors for the shell_recharge_ev integration."""
+"""Sensors for the shell_recharge integration."""
 from __future__ import annotations
 
 import logging
 import typing
 from typing import Any
 
-import shellrechargeev
+import shellrecharge
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -13,7 +13,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import ShellRechargeEVDataUpdateCoordinator
+from . import ShellRechargeDataUpdateCoordinator
 from .const import DOMAIN, EvseId
 
 _LOGGER = logging.getLogger(__name__)
@@ -29,21 +29,21 @@ async def async_setup_entry(
 
     for evse in coordinator.data.evses:
         evse_id = evse.uid
-        sensor = ShellRechargeEVSensor(evse_id=evse_id, coordinator=coordinator)
+        sensor = ShellRechargeSensor(evse_id=evse_id, coordinator=coordinator)
         entities.append(sensor)
 
     async_add_entities(entities, True)
 
 
-class ShellRechargeEVSensor(
-    CoordinatorEntity[ShellRechargeEVDataUpdateCoordinator], SensorEntity  # type: ignore
+class ShellRechargeSensor(
+    CoordinatorEntity[ShellRechargeDataUpdateCoordinator], SensorEntity  # type: ignore
 ):
     """Main feature of this integration. This sensor represents an EVSE and shows its realtime availability status."""
 
     def __init__(
         self,
         evse_id: EvseId,
-        coordinator: ShellRechargeEVDataUpdateCoordinator,
+        coordinator: ShellRechargeDataUpdateCoordinator,
     ) -> None:
         """Initialize the Sensor."""
         super().__init__(coordinator)
@@ -66,7 +66,7 @@ class ShellRechargeEVSensor(
             identifiers={(DOMAIN, self._attr_name)},
             entry_type=None,
         )
-        self._attr_options = list(typing.get_args(shellrechargeev.models.Status))
+        self._attr_options = list(typing.get_args(shellrecharge.models.Status))
         self._read_coordinator_data()
 
     def _get_evse(self) -> Any:
@@ -74,7 +74,7 @@ class ShellRechargeEVSensor(
             if evse.uid == self.evse_id:
                 return evse
 
-    def _choose_icon(self, connectors: list[shellrechargeev.models.Connector]) -> str:
+    def _choose_icon(self, connectors: list[shellrecharge.models.Connector]) -> str:
         iconmap: dict[str, str] = {
             "Type1": "mdi:ev-plug-type1",
             "Type2": "mdi:ev-plug-type2",

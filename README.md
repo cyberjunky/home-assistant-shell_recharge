@@ -1,4 +1,4 @@
-# Shell Recharge EV
+# Shell Recharge
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -7,13 +7,13 @@
 ![Project Maintenance][maintenance-shield]
 [![Sponsor][sponsor-shield]][sponsor]
 
-_Integration to integrate with [shell_recharge_ev][shell_recharge_ev]._
+_Integration to integrate with [shell_recharge][shell_recharge]._
 
 **This integration will set up the following platforms.**
 
-| Platform | Description                                            |
-| -------- | ------------------------------------------------------ |
-| `sensor` | Contains detailed information for charger at location. |
+| Platform | Description                                               |
+| -------- | --------------------------------------------------------- |
+| `sensor` | Contains detailed information for EV charger at location. |
 
 ## Installation
 
@@ -27,7 +27,7 @@ _Integration to integrate with [shell_recharge_ev][shell_recharge_ev]._
 
 ### Manual
 
-- Copy directory `custom_components/shell_recharge_ev` to your `<config dir>/custom_components` directory.
+- Copy directory `custom_components/shell_recharge` to your `<config dir>/custom_components` directory.
 - Configure with config below.
 - Restart Home-Assistant.
 
@@ -45,7 +45,7 @@ Add the relevant lines below to the `configuration.yaml`:
 logger:
   default: info
   logs:
-    custom_components.shell_recharge_ev: debug
+    custom_components.shell_recharge: debug
 ```
 
 <!---->
@@ -56,12 +56,12 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ---
 
-[shell_recharge_ev]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev
-[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
-[commits]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev/commits/main
-[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
+[shell_recharge]: https://github.com/cyberjunky/home-assistant-shell_recharge
+[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
+[commits]: https://github.com/cyberjunky/home-assistant-shell_recharge/commits/main
+[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40cyberjunky-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-shell_recharge_ev.svg?style=for-the-badge
-[releases]: https://github.com/cyberjunky/home-assistant-shell_recharge_ev/releases
+[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
+[releases]: https://github.com/cyberjunky/home-assistant-shell_recharge/releases
 [sponsor-shield]: https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86
 [sponsor]: https://github.com/sponsors/cyberjunky

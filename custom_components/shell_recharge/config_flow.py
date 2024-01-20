@@ -1,10 +1,10 @@
-"""Config flow for shell_recharge_ev integration."""
+"""Config flow for shell_recharge integration."""
 from __future__ import annotations
 
 from asyncio import CancelledError
 from typing import Any
 
-import shellrechargeev
+import shellrecharge
 import voluptuous as vol
 from aiohttp.client_exceptions import ClientError
 from homeassistant import config_entries
@@ -16,7 +16,7 @@ from .const import DOMAIN
 RECHARGE_SCHEMA = vol.Schema({vol.Required("serial_number"): str})
 
 
-class ShellRechargeEVFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: ignore[misc, call-arg]
+class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: ignore[misc, call-arg]
     """Handle a config flow for shell_recharge_ev."""
 
     VERSION = 2
@@ -30,7 +30,7 @@ class ShellRechargeEVFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # t
             return self.async_show_form(step_id="user", data_schema=RECHARGE_SCHEMA)
 
         try:
-            api = shellrechargeev.Api(websession=async_get_clientsession(self.hass))
+            api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
             if not await api.location_by_id(user_input["serial_number"]):
                 errors["base"] = "empty_response"
 

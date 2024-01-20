@@ -35,7 +35,7 @@
   },
   "forwardPorts": [8123],
   "image": "mcr.microsoft.com/devcontainers/python:3-bullseye",
-  "name": "Shell Recharge EV",
+  "name": "Shell Recharge",
   "portsAttributes": {
     "0-8122": {
       "label": "Auto-Forwarded - Other",
@@ -51,5 +51,4 @@
   },
   "postCreateCommand": "scripts/setup",
   "remoteUser": "vscode"
-  // "runArgs": ["-e", "GIT_EDITOR=code --wait"]
 }

@@ -1,6 +1,6 @@
 {
   "hide_default_branch": true,
   "homeassistant": "2024.1.0",
-  "name": "Shell Recharge EV",
+  "name": "Shell Recharge",
   "render_readme": true
 }

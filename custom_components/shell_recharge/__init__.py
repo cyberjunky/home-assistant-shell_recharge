@@ -1,9 +1,9 @@
-"""The shell_recharge_ev integration."""
+"""The shell_recharge integration."""
 from __future__ import annotations
 
 import logging
 
-import shellrechargeev
+import shellrecharge
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -21,9 +21,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})
 
-    api = shellrechargeev.Api(websession=async_get_clientsession(hass))
+    api = shellrecharge.Api(websession=async_get_clientsession(hass))
 
-    coordinator = ShellRechargeEVDataUpdateCoordinator(
+    coordinator = ShellRechargeDataUpdateCoordinator(
         hass, api, entry.data["serial_number"]
     )
     hass.data[DOMAIN][entry.entry_id] = coordinator
@@ -44,11 +44,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-class ShellRechargeEVDataUpdateCoordinator(DataUpdateCoordinator):  # type: ignore[misc]
+class ShellRechargeDataUpdateCoordinator(DataUpdateCoordinator):  # type: ignore[misc]
     """My custom coordinator."""
 
     def __init__(
-        self, hass: HomeAssistant, api: shellrechargeev.Api, serial_number: SerialNumber
+        self, hass: HomeAssistant, api: shellrecharge.Api, serial_number: SerialNumber
     ) -> None:
         """Initialize my coordinator."""
         super().__init__(
@@ -60,7 +60,7 @@ class ShellRechargeEVDataUpdateCoordinator(DataUpdateCoordinator):  # type: igno
         self.api = api
         self.serial_number = serial_number
 
-    async def _async_update_data(self) -> shellrechargeev.Location:
+    async def _async_update_data(self) -> shellrecharge.Location:
         """Fetch data from API endpoint.
 
         This is the place to pre-process the data to lookup tables
