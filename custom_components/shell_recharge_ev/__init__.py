@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 
-import async_timeout
 import shellrechargeev
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
@@ -61,16 +60,10 @@ class ShellRechargeEVDataUpdateCoordinator(DataUpdateCoordinator):  # type: igno
         self.api = api
         self.location_id = location_id
 
-    async def _async_update_data(self) -> shellrechargeev.Location | None:
+    async def _async_update_data(self) -> shellrechargeev.Location:
         """Fetch data from API endpoint.
 
         This is the place to pre-process the data to lookup tables
         so entities can quickly look up their data.
         """
-        location = {}
-        # Note: asyncio.TimeoutError and aiohttp.ClientError are already
-        # handled by the data update coordinator.
-        async with async_timeout.timeout(10):
-            location = await self.api.location_by_id(self.location_id)
-
-            return location
+        return await self.api.location_by_id(self.location_id)
