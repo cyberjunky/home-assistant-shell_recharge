@@ -1,5 +1,7 @@
 # Shell Recharge
 
+The Shell Recharge integration allows you to expose data from EV chargers on shellrecharge.com to Home Assistant.
+
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
@@ -7,20 +9,18 @@
 ![Project Maintenance][maintenance-shield]
 [![Sponsor][sponsor-shield]][sponsor]
 
-_Integration to integrate with [shell_recharge][shell_recharge]._
-
 **This integration will set up the following platforms.**
 
-| Platform | Description                                               |
-| -------- | --------------------------------------------------------- |
-| `sensor` | Contains detailed information for EV charger at location. |
+| Platform | Description                                                    |
+| -------- | -------------------------------------------------------------- |
+| `sensor` | Contains detailed information for each EV charger at location. |
 
 ## Installation
 
 ### HACS - Recommended
 
 - Have [HACS](https://hacs.xyz) installed, this will allow you to easily manage and track updates.
-- Search for 'Shell Recharge EV'.
+- Search for 'Shell Recharge'.
 - Click Install below the found integration.
 - Configure using the configuration instructions below.
 - Restart Home-Assistant.
@@ -33,7 +33,8 @@ _Integration to integrate with [shell_recharge][shell_recharge]._
 
 ## Configuration
 
-To find the serial numbers, find charger(s) to monitor here https://ui-map.shellrecharge.com/ and use the Serial number under details.
+To configure find EV charger(s) you want to monitor here: https://ui-map.shellrecharge.com/ find the Serial number of the location under details.  
+Then use Add device within Home Assistant and enter the Serial number in the form.
 
 ## Screenshots
 
