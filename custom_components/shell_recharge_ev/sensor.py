@@ -66,7 +66,7 @@ class ShellRechargeEVSensor(
             identifiers={(DOMAIN, self._attr_name)},
             entry_type=None,
         )
-        self._attr_options = list(typing.get_args(shellrechargeev.Status))
+        self._attr_options = list(typing.get_args(shellrechargeev.models.Status))
         self._read_coordinator_data()
 
     def _get_evse(self) -> Any:
@@ -74,7 +74,7 @@ class ShellRechargeEVSensor(
             if evse.uid == self.evse_id:
                 return evse
 
-    def _choose_icon(self, connectors: list[shellrechargeev.Connector]) -> str:
+    def _choose_icon(self, connectors: list[shellrechargeev.models.Connector]) -> str:
         iconmap: dict[str, str] = {
             "Type1": "mdi:ev-plug-type1",
             "Type2": "mdi:ev-plug-type2",
@@ -114,14 +114,13 @@ class ShellRechargeEVSensor(
                 "tariff_updated": connector.tariff.updated,
                 "tariff_updated_by": connector.tariff.updatedBy,
                 "tariff_structure": connector.tariff.structure,
-                "tariff_vat": self.location.vat,
                 "connector_power_type": connector.electricalProperties.powerType,
                 "connector_voltage": connector.electricalProperties.voltage,
                 "connector_ampere": connector.electricalProperties.amperage,
                 "connector_max_power": connector.electricalProperties.maxElectricPower,
                 "connector_fixed_cable": connector.fixedCable,
                 "accessibility": self.location.accessibilityV2.status,
-                "recharge_id": str(self.location.uid),
+                "external_id": str(self.location.externalId),
                 "evse_id": str(evse.evseId),
                 "opentwentyfourseven": self.location.openTwentyFourSeven,
             }

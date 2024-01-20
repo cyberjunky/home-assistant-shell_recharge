@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import DOMAIN, UPDATE_INTERVAL, LocationId
+from .const import DOMAIN, UPDATE_INTERVAL, SerialNumber
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS: list[Platform] = [Platform.SENSOR]
@@ -24,7 +24,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     api = shellrechargeev.Api(websession=async_get_clientsession(hass))
 
     coordinator = ShellRechargeEVDataUpdateCoordinator(
-        hass, api, entry.data["location_id"]
+        hass, api, entry.data["serial_number"]
     )
     hass.data[DOMAIN][entry.entry_id] = coordinator
     await coordinator.async_config_entry_first_refresh()
@@ -48,7 +48,7 @@ class ShellRechargeEVDataUpdateCoordinator(DataUpdateCoordinator):  # type: igno
     """My custom coordinator."""
 
     def __init__(
-        self, hass: HomeAssistant, api: shellrechargeev.Api, location_id: LocationId
+        self, hass: HomeAssistant, api: shellrechargeev.Api, serial_number: SerialNumber
     ) -> None:
         """Initialize my coordinator."""
         super().__init__(
@@ -58,7 +58,7 @@ class ShellRechargeEVDataUpdateCoordinator(DataUpdateCoordinator):  # type: igno
             update_interval=UPDATE_INTERVAL,
         )
         self.api = api
-        self.location_id = location_id
+        self.serial_number = serial_number
 
     async def _async_update_data(self) -> shellrechargeev.Location:
         """Fetch data from API endpoint.
@@ -66,4 +66,4 @@ class ShellRechargeEVDataUpdateCoordinator(DataUpdateCoordinator):  # type: igno
         This is the place to pre-process the data to lookup tables
         so entities can quickly look up their data.
         """
-        return await self.api.location_by_id(self.location_id)
+        return await self.api.location_by_id(self.serial_number)

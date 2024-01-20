@@ -5,14 +5,13 @@
     },
     "error": {
       "cannot_connect": "Failed to connect",
-      "empty_response": "Empty reponse from shellrecharge.com. Either invalid LOCATION-ID or no data for it.",
-      "malformed_location_id": "Malformed LOCATION-ID",
+      "empty_response": "Empty reponse from shellrecharge.com. Either invalid SERIAL-NUMBER or no data found for it.",
       "unknown": "Unexpected error"
     },
     "step": {
       "user": {
         "data": {
-          "location_id": "LOCATION-ID (e.g. 3357677)"
+          "serial_number": "SERIAL-NUMBER (e.g. 0F80EA26-5F5D-4728-B5E5-268BE55B9191)"
         }
       }
     }

@@ -11,9 +11,9 @@ _Integration to integrate with [shell_recharge_ev][shell_recharge_ev]._
 
 **This integration will set up the following platforms.**
 
-| Platform | Description                              |
-| -------- | ---------------------------------------- |
-| `sensor` | Contains useful information for charger. |
+| Platform | Description                                            |
+| -------- | ------------------------------------------------------ |
+| `sensor` | Contains detailed information for charger at location. |
 
 ## Installation
 
@@ -33,7 +33,7 @@ _Integration to integrate with [shell_recharge_ev][shell_recharge_ev]._
 
 ## Configuration
 
-Configuration is done in the UI
+To find the serial numbers, find charger(s) to monitor here https://ui-map.shellrecharge.com/ and use the Serial number under details.
 
 ## Screenshots
 

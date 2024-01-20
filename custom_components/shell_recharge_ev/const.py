@@ -2,6 +2,6 @@
 from datetime import timedelta
 
 DOMAIN = "shell_recharge_ev"
-LocationId = str
+SerialNumber = str
 EvseId = str
 UPDATE_INTERVAL = timedelta(minutes=5)
