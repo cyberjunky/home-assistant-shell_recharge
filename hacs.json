@@ -1,8 +1,6 @@
 {
-    "name": "Shell Recharge EV",
-    "filename": "shell_recharge_ev.zip",
-    "hide_default_branch": true,
-    "homeassistant": "2023.8.0",
-    "render_readme": true,
-    "zip_release": true
+  "hide_default_branch": true,
+  "homeassistant": "2024.1.0",
+  "name": "Shell Recharge EV",
+  "render_readme": true
 }

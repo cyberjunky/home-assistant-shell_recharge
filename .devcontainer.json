@@ -1,42 +1,55 @@
 {
-    "name": "cyberjunky/home-assistant-shell_recharge_ev",
-    "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
-    "postCreateCommand": "scripts/setup",
-    "forwardPorts": [
-        8123
-    ],
-    "portsAttributes": {
-        "8123": {
-            "label": "Home Assistant",
-            "onAutoForward": "notify"
-        }
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-python.python",
-                "github.vscode-pull-request-github",
-                "ryanluker.vscode-coverage-gutters",
-                "ms-python.vscode-pylance"
-            ],
-            "settings": {
-                "files.eol": "\n",
-                "editor.tabSize": 4,
-                "python.pythonPath": "/usr/bin/python3",
-                "python.analysis.autoSearchPaths": false,
-                "python.linting.pylintEnabled": true,
-                "python.linting.enabled": true,
-                "python.formatting.provider": "black",
-                "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
-                "editor.formatOnPaste": false,
-                "editor.formatOnSave": true,
-                "editor.formatOnType": true,
-                "files.trimTrailingWhitespace": true
-            }
-        }
-    },
-    "remoteUser": "vscode",
-    "features": {
-        "ghcr.io/devcontainers/features/rust:1": {}
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "github.vscode-pull-request-github",
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.vscode-pylance",
+        "ms-vscode.makefile-tools",
+        "ryanluker.vscode-coverage-gutters",
+        "visualstudioexptteam.vscodeintellicode"
+      ],
+      "settings": {
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.tabSize": 4,
+        "files.eol": "\n",
+        "files.trimTrailingWhitespace": true,
+        "python.analysis.autoSearchPaths": false,
+        "python.analysis.typeCheckingMode": "basic",
+        "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+        "python.formatting.provider": "black",
+        "python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
+        "python.languageServer": "Pylance",
+        "python.pythonPath": "/usr/bin/python3",
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false
+      }
     }
+  },
+  "features": {
+    "rust": "latest"
+  },
+  "forwardPorts": [8123],
+  "image": "mcr.microsoft.com/devcontainers/python:3-bullseye",
+  "name": "Shell Recharge EV",
+  "portsAttributes": {
+    "0-8122": {
+      "label": "Auto-Forwarded - Other",
+      "onAutoForward": "ignore"
+    },
+    "8123": {
+      "label": "Home Assistant"
+    },
+    "8124-999999": {
+      "label": "Auto-Forwarded - Other",
+      "onAutoForward": "ignore"
+    }
+  },
+  "postCreateCommand": "scripts/setup",
+  "remoteUser": "vscode"
+  // "runArgs": ["-e", "GIT_EDITOR=code --wait"]
 }
