@@ -38,6 +38,8 @@ Then use Add device within Home Assistant and enter the Serial number in the for
 
 ## Screenshots
 
+![alt text](https://raw.githubusercontent.com/cyberjunky/home-assistant-shell_recharge/main/screenshots/overview.png?raw=true "Chargers Overview") ![alt text](https://raw.githubusercontent.com/cyberjunky/home-assistant-shell_recharge/main/screenshots/details.png?raw=true "AC Charger Details") ![alt text](https://raw.githubusercontent.com/cyberjunky/home-assistant-shell_recharge/main/screenshots/details_dc.png?raw=true "DC Charger Details")
+
 ## Debugging
 
 Add the relevant lines below to the `configuration.yaml`:
