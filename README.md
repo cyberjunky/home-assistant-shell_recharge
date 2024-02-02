@@ -38,6 +38,19 @@ Then use Add device within Home Assistant and enter the Serial number in the for
 
 ## Screenshots
 
+<table>
+  <tr>
+    <td>Chargers Overview</td>
+     <td>AC Charger Details</td>
+     <td>DC Charger Details</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/overview.png"></td>
+    <td><img src="screenshots/details.png"></td>
+    <td><img src="screenshots/details_dc.png"></td>
+  </tr>
+ </table>
+
 ## Debugging
 
 Add the relevant lines below to the `configuration.yaml`:
