@@ -10,6 +10,7 @@ from aiohttp.client_exceptions import ClientError
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from shellrecharge import LocationEmptyError, LocationValidationError
 
 from .const import DOMAIN
 
@@ -31,9 +32,11 @@ class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # typ
 
         try:
             api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
-            if not await api.location_by_id(user_input["serial_number"]):
-                errors["base"] = "empty_response"
-
+            await api.location_by_id(user_input["serial_number"])
+        except LocationEmptyError:
+            errors["base"] = "empty_response"
+        except LocationValidationError:
+            errors["base"] = "validation"
         except (ClientError, TimeoutError, CancelledError):
             errors["base"] = "cannot_connect"
 

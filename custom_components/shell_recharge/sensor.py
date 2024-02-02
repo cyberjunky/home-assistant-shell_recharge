@@ -27,12 +27,13 @@ async def async_setup_entry(
     entities = []
     evse_id = ""
 
-    for evse in coordinator.data.evses:
-        evse_id = evse.uid
-        sensor = ShellRechargeSensor(evse_id=evse_id, coordinator=coordinator)
-        entities.append(sensor)
+    if coordinator.data:
+        for evse in coordinator.data.evses:
+            evse_id = evse.uid
+            sensor = ShellRechargeSensor(evse_id=evse_id, coordinator=coordinator)
+            entities.append(sensor)
 
-    async_add_entities(entities, True)
+        async_add_entities(entities, True)
 
 
 class ShellRechargeSensor(
@@ -70,9 +71,11 @@ class ShellRechargeSensor(
         self._read_coordinator_data()
 
     def _get_evse(self) -> Any:
-        for evse in self.coordinator.data.evses:
-            if evse.uid == self.evse_id:
-                return evse
+        if self.coordinator.data:
+            for evse in self.coordinator.data.evses:
+                if evse.uid == self.evse_id:
+                    return evse
+        return None
 
     def _choose_icon(self, connectors: list[shellrecharge.models.Connector]) -> str:
         iconmap: dict[str, str] = {
@@ -95,36 +98,44 @@ class ShellRechargeSensor(
         """Read data from shell recharge ev."""
         evse = self._get_evse()
         _LOGGER.debug(evse)
-        if evse:
-            self._attr_native_value = evse.status
-            self._attr_icon = self._choose_icon(evse.connectors)
-            connector = evse.connectors[0]
-            extra_data = {
-                "address": self.location.address.streetAndNumber,
-                "city": self.location.address.city,
-                "postal_code": self.location.address.postalCode,
-                "country": self.location.address.country,
-                "latitude": self.location.coordinates.latitude,
-                "longitude": self.location.coordinates.longitude,
-                "operator_name": self.location.operatorName,
-                "suboperator_name": self.location.suboperatorName,
-                "support_phonenumber": self.location.supportPhoneNumber,
-                "tariff_per_kwh": connector.tariff.perKWh,
-                "tariff_currency": connector.tariff.currency,
-                "tariff_updated": connector.tariff.updated,
-                "tariff_updated_by": connector.tariff.updatedBy,
-                "tariff_structure": connector.tariff.structure,
-                "connector_power_type": connector.electricalProperties.powerType,
-                "connector_voltage": connector.electricalProperties.voltage,
-                "connector_ampere": connector.electricalProperties.amperage,
-                "connector_max_power": connector.electricalProperties.maxElectricPower,
-                "connector_fixed_cable": connector.fixedCable,
-                "accessibility": self.location.accessibilityV2.status,
-                "external_id": str(self.location.externalId),
-                "evse_id": str(evse.evseId),
-                "opentwentyfourseven": self.location.openTwentyFourSeven,
-            }
-            self._attr_extra_state_attributes = extra_data
+
+        try:
+            if evse:
+                self._attr_native_value = evse.status
+                self._attr_icon = self._choose_icon(evse.connectors)
+                connector = evse.connectors[0]
+                extra_data = {
+                    "address": self.location.address.streetAndNumber,
+                    "city": self.location.address.city,
+                    "postal_code": self.location.address.postalCode,
+                    "country": self.location.address.country,
+                    "latitude": self.location.coordinates.latitude,
+                    "longitude": self.location.coordinates.longitude,
+                    "operator_name": self.location.operatorName,
+                    "suboperator_name": self.location.suboperatorName,
+                    "support_phonenumber": self.location.supportPhoneNumber,
+                    "tariff_startfee": connector.tariff.startFee,
+                    "tariff_per_kwh": connector.tariff.perKWh,
+                    "tariff_per_minute": connector.tariff.perMinute,
+                    "tariff_currency": connector.tariff.currency,
+                    "tariff_updated": connector.tariff.updated,
+                    "tariff_updated_by": connector.tariff.updatedBy,
+                    "tariff_structure": connector.tariff.structure,
+                    "connector_power_type": connector.electricalProperties.powerType,
+                    "connector_voltage": connector.electricalProperties.voltage,
+                    "connector_ampere": connector.electricalProperties.amperage,
+                    "connector_max_power": connector.electricalProperties.maxElectricPower,
+                    "connector_fixed_cable": connector.fixedCable,
+                    "accessibility": self.location.accessibilityV2.status,
+                    "external_id": str(self.location.externalId),
+                    "evse_id": str(evse.evseId),
+                    "opentwentyfourseven": self.location.openTwentyFourSeven,
+                    # "opening_hours": self.location.openingHours,
+                    # "predicted_occupancies": self.location.predictedOccupancies,
+                }
+                self._attr_extra_state_attributes = extra_data
+        except AttributeError as err:
+            _LOGGER.error(err)
 
     @callback  # type: ignore
     def _handle_coordinator_update(self) -> None:

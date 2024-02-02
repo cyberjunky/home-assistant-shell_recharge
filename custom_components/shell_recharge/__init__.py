@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from asyncio.exceptions import CancelledError
 
 import shellrecharge
 from homeassistant.config_entries import ConfigEntry
@@ -60,10 +61,24 @@ class ShellRechargeDataUpdateCoordinator(DataUpdateCoordinator):  # type: ignore
         self.api = api
         self.serial_number = serial_number
 
-    async def _async_update_data(self) -> shellrecharge.Location:
+    async def _async_update_data(self) -> shellrecharge.Location | None:
         """Fetch data from API endpoint.
 
         This is the place to pre-process the data to lookup tables
         so entities can quickly look up their data.
         """
-        return await self.api.location_by_id(self.serial_number)
+        data = None
+        try:
+            data = await self.api.location_by_id(self.serial_number)
+        except CancelledError:
+            _LOGGER.error(
+                "CancelledError occurred while fetching data for charger(s) %s",
+                self.serial_number,
+            )
+        except TimeoutError:
+            _LOGGER.error(
+                "TimeoutError occurred while fetching data for charger(s) %s",
+                self.serial_number,
+            )
+
+        return data
