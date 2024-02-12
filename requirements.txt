@@ -2,7 +2,7 @@ colorlog==6.8.2
 homeassistant==2024.1.0
 mypy==1.8.0
 pip>=21.0,<23.4
-pre-commit==3.6.0
+pre-commit==3.6.1
 pylint==3.0.3
 ruff==0.1.14
 shellrecharge==0.1.16
