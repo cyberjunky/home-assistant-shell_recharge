@@ -5,6 +5,8 @@ import logging
 from asyncio.exceptions import CancelledError
 
 import shellrecharge
+from shellrecharge import LocationEmptyError
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -70,6 +72,11 @@ class ShellRechargeDataUpdateCoordinator(DataUpdateCoordinator):  # type: ignore
         data = None
         try:
             data = await self.api.location_by_id(self.serial_number)
+        except LocationEmptyError:
+            _LOGGER.error(
+                "Error occurred while fetching data for charger(s) %s, not found, or serial is invalid",
+                self.serial_number,
+            )
         except CancelledError:
             _LOGGER.error(
                 "CancelledError occurred while fetching data for charger(s) %s",
