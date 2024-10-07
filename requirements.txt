@@ -4,7 +4,7 @@ mypy==1.11.1
 pre-commit==3.8.0
 pip>=21.0,<24.3
 pylint==3.2.6
-ruff==0.5.7
+ruff==0.6.9
 shellrecharge==0.1.17
 types-cachetools
 vulture==2.11
