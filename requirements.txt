@@ -7,4 +7,4 @@ pylint==3.3.1
 ruff==0.7.3
 shellrecharge==0.1.17
 types-cachetools
-vulture==2.11
+vulture==2.13
