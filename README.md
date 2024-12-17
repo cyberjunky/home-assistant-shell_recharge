@@ -33,23 +33,14 @@ The Shell Recharge integration allows you to expose data from EV chargers on she
 
 ## Configuration
 
-Find the EV charger(s) you want to monitor here: https://shellrecharge.com/en-gb/find-a-charge-point look for the Serial number under details section.
+Find the EV charger(s) you want to monitor here: <https://shellrecharge.com/en-gb/find-a-charge-point> look for the Serial number under details section.
 Then use Add device within Home Assistant and enter the Serial number in the form.
 
 ## Screenshots
 
-<table>
-  <tr>
-    <td>Chargers Overview</td>
-     <td>AC Charger Details</td>
-     <td>DC Charger Details</td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/overview.png"></td>
-    <td><img src="screenshots/details.png"></td>
-    <td><img src="screenshots/details_dc.png"></td>
-  </tr>
- </table>
+| Chargers Overview                              | AC Charger Details                             | DC Charger Details                                |
+| ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
+| ![Chargers Overview](screenshots/overview.png) | ![AC Charger Details](screenshots/details.png) | ![DC Charger Details](screenshots/details_dc.png) |
 
 ## Debugging
 
@@ -64,13 +55,12 @@ logger:
 
 <!---->
 
-## Contributions are welcome!
+## Contributions are welcome
 
 If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
 
 ---
 
-[shell_recharge]: https://github.com/cyberjunky/home-assistant-shell_recharge
 [commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
 [commits]: https://github.com/cyberjunky/home-assistant-shell_recharge/commits/main
 [license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
