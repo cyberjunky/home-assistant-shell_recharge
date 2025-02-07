@@ -20,7 +20,7 @@ The Shell Recharge integration allows you to expose data from EV chargers on she
 ### HACS - Recommended
 
 - Have [HACS](https://hacs.xyz) installed, this will allow you to easily manage and track updates.
-- Add custom repository, paste https://github.com/cyberjunky/home-assistant-shell_recharge, select interation as type.
+- Add custom repository, paste https://github.com/cyberjunky/home-assistant-shell_recharge, select `integration` as type.
 - Search for 'Shell Recharge'.
 - Click Install below the found integration.
 - Configure using the configuration instructions below.
