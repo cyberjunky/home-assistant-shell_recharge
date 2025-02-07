@@ -48,6 +48,27 @@ Example:
 | ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
 | ![Chargers Overview](screenshots/overview.png) | ![AC Charger Details](screenshots/details.png) | ![DC Charger Details](screenshots/details_dc.png) |
 
+## Automation
+
+Example flow to get notified when a charger status changes to available
+
+```
+automation:
+  - alias: "Chargers Available"
+    triggers:
+      - trigger: state
+        entity_id:
+          - sensor.some_charger_1
+          - sensor.some_charger_2
+        from: "Occupied"
+        to: "Available"
+    actions:
+      - action: notify.your
+        data_template:
+          message: >-
+            Charger {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }} from now.
+```
+
 ## Debugging
 
 Add the relevant lines below to the `configuration.yaml`:
