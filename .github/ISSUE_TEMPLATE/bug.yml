@@ -28,7 +28,7 @@ body:
       description: "To enable debug logs check this https://www.home-assistant.io/integrations/logger/, this **needs** to include _everything_ from startup of Home Assistant to the point where you encounter the issue."
       render: text
     validations:
-      required: true
+      required: false
   - type: textarea
     attributes:
       label: "Diagnostics dump"
