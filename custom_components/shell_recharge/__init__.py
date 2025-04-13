@@ -1,22 +1,39 @@
 """The shell_recharge integration."""
+
 from __future__ import annotations
 
 import logging
-from asyncio.exceptions import CancelledError
 
 import shellrecharge
-from shellrecharge import LocationEmptyError
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import DOMAIN, UPDATE_INTERVAL, SerialNumber
+from .const import DOMAIN
+from .coordinator import (
+    ShellRechargePublicDataUpdateCoordinator,
+    ShellRechargeUserDataUpdateCoordinator,
+)
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS: list[Platform] = [Platform.SENSOR]
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old entry."""
+    _LOGGER.debug("Migrating configuration from %s", entry.version)
+
+    if entry.version == 2:
+        new_data = {**entry.data}
+        new_data["public"]["serial_number"] = new_data["serial_number"]
+        del new_data["serial_number"]
+
+    hass.config_entries.async_update_entry(entry, data=new_data, version=3)
+
+    _LOGGER.debug("Migration to configuration version %s successful", entry.version)
+
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -26,9 +43,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api = shellrecharge.Api(websession=async_get_clientsession(hass))
 
-    coordinator = ShellRechargeDataUpdateCoordinator(
-        hass, api, entry.data["serial_number"]
-    )
+    if entry.data.get("public") and entry.data["public"].get("serial_number"):
+        coordinator = ShellRechargePublicDataUpdateCoordinator(
+            hass, api, entry.data["public"]["serial_number"]
+        )
+    else:
+        coordinator = ShellRechargeUserDataUpdateCoordinator(
+            hass,
+            await api.get_user(
+                entry.data["private"]["email"],
+                entry.data["private"]["password"],
+                entry.data["private"].get("api_key"),
+            ),
+        )
+
     hass.data[DOMAIN][entry.entry_id] = coordinator
     await coordinator.async_config_entry_first_refresh()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -45,47 +73,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-
-
-class ShellRechargeDataUpdateCoordinator(DataUpdateCoordinator):  # type: ignore[misc]
-    """My custom coordinator."""
-
-    def __init__(
-        self, hass: HomeAssistant, api: shellrecharge.Api, serial_number: SerialNumber
-    ) -> None:
-        """Initialize my coordinator."""
-        super().__init__(
-            hass,
-            _LOGGER,
-            name=DOMAIN,
-            update_interval=UPDATE_INTERVAL,
-        )
-        self.api = api
-        self.serial_number = serial_number
-
-    async def _async_update_data(self) -> shellrecharge.Location | None:
-        """Fetch data from API endpoint.
-
-        This is the place to pre-process the data to lookup tables
-        so entities can quickly look up their data.
-        """
-        data = None
-        try:
-            data = await self.api.location_by_id(self.serial_number)
-        except LocationEmptyError:
-            _LOGGER.error(
-                "Error occurred while fetching data for charger(s) %s, not found, or serial is invalid",
-                self.serial_number,
-            )
-        except CancelledError:
-            _LOGGER.error(
-                "CancelledError occurred while fetching data for charger(s) %s",
-                self.serial_number,
-            )
-        except TimeoutError:
-            _LOGGER.error(
-                "TimeoutError occurred while fetching data for charger(s) %s",
-                self.serial_number,
-            )
-
-        return data
