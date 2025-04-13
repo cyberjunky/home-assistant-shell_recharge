@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import logging
 
+from collections import defaultdict
+
 import shellrecharge
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
@@ -25,7 +27,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Migrating configuration from %s", entry.version)
 
     if entry.version == 2:
-        new_data = {**entry.data}
+        new_data = defaultdict(lambda: defaultdict(str), entry.data)
         new_data["public"]["serial_number"] = new_data["serial_number"]
         del new_data["serial_number"]
 
