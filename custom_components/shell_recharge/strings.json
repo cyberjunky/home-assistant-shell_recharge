@@ -1,15 +1,4 @@
 {
-  "exceptions": {
-    "invalid_toggle": {
-      "message": "Invalid toggle selected, expected ['start', 'stop']. Got {toggle}"
-    },
-    "invalid_card": {
-      "message": "Invalid card selected. Got {card}"
-    },
-    "session_toggle": {
-      "message": "Could not {toggle} session on {charger} with {rfid}."
-    }
-  },
   "config": {
     "abort": {
       "already_configured": "Device is already configured"
@@ -17,28 +6,39 @@
     "error": {
       "cannot_connect": "Failed to connect",
       "empty_response": "Empty reponse from shellrecharge.com. Either invalid SERIAL-NUMBER or no data found for it.",
-      "unknown": "Unexpected error",
-      "login_failed": "Login failed, please verify email and password are correct."
+      "login_failed": "Login failed, please verify email and password are correct.",
+      "unknown": "Unexpected error"
     },
     "step": {
       "user": {
-        "title": "Configure a public or private charge point",
         "sections": {
-          "public": {
-            "name": "Public charge point",
-            "data": {
-              "serial_number": "SERIAL-NUMBER (e.g. 0F80EA26-5F5D-4728-B5E5-268BE55B9191)"
-            }
-          },
           "private": {
-            "name": "Private charge point",
             "data": {
               "email": "Shell Recharge account e-mail address",
               "password": "Shell Recharge account password"
-            }
+            },
+            "name": "Private charge point"
+          },
+          "public": {
+            "data": {
+              "serial_number": "SERIAL-NUMBER (e.g. 0F80EA26-5F5D-4728-B5E5-268BE55B9191)"
+            },
+            "name": "Public charge point"
           }
-        }
+        },
+        "title": "Configure a public or private charge point"
       }
+    }
+  },
+  "exceptions": {
+    "invalid_card": {
+      "message": "Invalid card selected. Got {card}"
+    },
+    "invalid_toggle": {
+      "message": "Invalid toggle selected, expected ['start', 'stop']. Got {toggle}"
+    },
+    "session_toggle": {
+      "message": "Could not {toggle} session on {charger} with {rfid}."
     }
   }
 }

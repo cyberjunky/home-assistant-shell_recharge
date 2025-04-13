@@ -153,9 +153,9 @@ class ShellRechargePrivateSensor(
                 if self.evse.statusDetails.rfid:
                     extra_data["connected_card_rfid"] = self.evse.statusDetails.rfid
                 if self.evse.statusDetails.printedNumber:
-                    extra_data["connected_card_number"] = (
-                        self.evse.statusDetails.printedNumber
-                    )
+                    extra_data[
+                        "connected_card_number"
+                    ] = self.evse.statusDetails.printedNumber
                 self._attr_extra_state_attributes = extra_data
 
         except AttributeError as err:
