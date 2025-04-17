@@ -17,6 +17,8 @@ from homeassistant.helpers import entity_platform, entity_registry
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from shellrecharge.models import Location
+from shellrecharge.usermodels import DetailedAssets, DetailedChargePoint, DetailedEvse
 
 from . import (
     ShellRechargePublicDataUpdateCoordinator,
@@ -50,11 +52,13 @@ async def async_setup_entry(
         if isinstance(coordinator, ShellRechargePublicDataUpdateCoordinator):
             for evse in coordinator.data.evses:
                 evse_id = evse.uid
-                sensor = ShellRechargeSensor(evse_id=evse_id, coordinator=coordinator)
+                sensor: SensorEntity | BinarySensorEntity = ShellRechargeSensor(
+                    evse_id=evse_id, coordinator=coordinator
+                )
                 entities.append(sensor)
         else:
             for charger in coordinator.data.chargePoints:
-                for evse in charger._embedded.evses:
+                for evse in charger._embedded.evses:  # pylint: disable=protected-access
                     evse_id = evse.evseId
                     sensor = ShellRechargePrivateSensor(
                         evse_id=evse_id, coordinator=coordinator
@@ -69,7 +73,7 @@ async def async_setup_entry(
 
 class ShellRechargePrivateSensor(
     CoordinatorEntity[ShellRechargeUserDataUpdateCoordinator],
-    SensorEntity,  # type: ignore
+    SensorEntity,
 ):
     """This sensor represent a private charger."""
 
@@ -102,21 +106,23 @@ class ShellRechargePrivateSensor(
         self._attr_supported_features = ShellRechargeEntityFeature.TOGGLE_SESSION
         self._read_coordinator_data()
 
-    def _get_charger(self) -> Any:
-        if self.coordinator.data:
-            for charger in self.coordinator.data.chargePoints:
-                for evse in charger._embedded.evses:
+    def _get_charger(self) -> DetailedChargePoint:
+        assets: DetailedAssets = self.coordinator.data
+        if assets:
+            for charger in assets.chargePoints:
+                for evse in charger._embedded.evses:  # pylint: disable=protected-access
                     if evse.evseId == self.evse_id:
                         return charger
-        return None
+        raise HomeAssistantError()
 
-    def _get_evse(self) -> Any:
-        if self.coordinator.data:
-            for charger in self.coordinator.data.chargePoints:
-                for evse in charger._embedded.evses:
+    def _get_evse(self) -> DetailedEvse:
+        assets: DetailedAssets = self.coordinator.data
+        if assets:
+            for charger in assets.chargePoints:
+                for evse in charger._embedded.evses:  # pylint: disable=protected-access
                     if evse.evseId == self.evse_id:
                         return evse
-        return None
+        raise HomeAssistantError()
 
     def _read_coordinator_data(self) -> None:
         """Read data frem shell recharge charger."""
@@ -161,15 +167,15 @@ class ShellRechargePrivateSensor(
         except AttributeError as err:
             _LOGGER.error(err)
 
-    @callback  # type: ignore
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._read_coordinator_data()
         self.async_write_ha_state()
 
-    async def toggle_session(self, **kwargs):
+    async def toggle_session(self, **kwargs: str) -> bool:
         """Handle the service call to toggle the charge point session."""
-        toggle = kwargs.get("toggle")
+        toggle = kwargs.get("toggle", "")
         if toggle not in ["start", "stop"]:
             raise ServiceValidationError(
                 translation_domain=DOMAIN,
@@ -177,20 +183,28 @@ class ShellRechargePrivateSensor(
                 translation_placeholders={"toggle": toggle},
             )
 
-        card = kwargs.get("card")
+        card = kwargs.get("card", "")
+        if not card:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_card",
+                translation_placeholders={"card": card},
+            )
         registry = entity_registry.async_get(self.hass)
-        uuid = registry.async_get(card).unique_id
+        card_entity = registry.async_get(card)
+        if not card_entity:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="invalid_card",
+                translation_placeholders={"card": card},
+            )
+        uuid = card_entity.unique_id
 
         # Solely doing it like this since I'm more confident in the uniqueness
         # of the card's uuid than its rfid.
+        assets: DetailedAssets = self.coordinator.data
         rfid = next(
-            iter(
-                [
-                    token.rfid
-                    for token in self.coordinator.data.chargeTokens
-                    if token.uuid == uuid
-                ]
-            ),
+            iter([token.rfid for token in assets.chargeTokens if token.uuid == uuid]),
             None,
         )
         if not rfid:
@@ -211,11 +225,12 @@ class ShellRechargePrivateSensor(
                     "card": rfid,
                 },
             )
+        return True
 
 
 class ShellCardSensor(
     CoordinatorEntity[ShellRechargeUserDataUpdateCoordinator],
-    BinarySensorEntity,  # type: ignore
+    BinarySensorEntity,
 ):
     """This sensor represent a charge card."""
 
@@ -236,7 +251,7 @@ class ShellCardSensor(
         self._attr_name = self.card.name
         self._attr_device_info = DeviceInfo(
             name=self._attr_name,
-            identifiers={(DOMAIN, self._attr_name)},
+            identifiers={(DOMAIN, str(self._attr_name))},
             entry_type=None,
             manufacturer="Shell",
         )
@@ -250,17 +265,18 @@ class ShellCardSensor(
             "printed_number": self.card.printedNumber,
         }
 
-    def _get_card(self) -> shellrecharge.usermodels.ChargeToken | None:
-        if self.coordinator.data:
-            for card in self.coordinator.data.chargeTokens:
+    def _get_card(self) -> shellrecharge.usermodels.ChargeToken:
+        assets: DetailedAssets = self.coordinator.data
+        if assets:
+            for card in assets.chargeTokens:
                 if card.uuid == self.card_id:
                     return card
-        return None
+        raise HomeAssistantError()
 
 
 class ShellRechargeSensor(
     CoordinatorEntity[ShellRechargePublicDataUpdateCoordinator],
-    SensorEntity,  # type: ignore
+    SensorEntity,
 ):
     """Main feature of this integration. This sensor represents an EVSE and shows its realtime availability status."""
 
@@ -273,7 +289,7 @@ class ShellRechargeSensor(
         super().__init__(coordinator)
         self.evse_id = evse_id
         self.coordinator = coordinator
-        self.location = self.coordinator.data
+        self.location: Location = self.coordinator.data
         self._attr_unique_id = f"{evse_id}-charger"
         self._attr_attribution = "shellrecharge.com"
         self._attr_device_class = SensorDeviceClass.ENUM
@@ -295,8 +311,8 @@ class ShellRechargeSensor(
         self._read_coordinator_data()
 
     def _get_evse(self) -> Any:
-        if self.coordinator.data:
-            for evse in self.coordinator.data.evses:
+        if self.location:
+            for evse in self.location.evses:
                 if evse.uid == self.evse_id:
                     return evse
         return None
@@ -361,7 +377,7 @@ class ShellRechargeSensor(
         except AttributeError as err:
             _LOGGER.error(err)
 
-    @callback  # type: ignore
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._read_coordinator_data()

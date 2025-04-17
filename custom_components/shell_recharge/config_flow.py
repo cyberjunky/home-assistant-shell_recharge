@@ -9,7 +9,7 @@ import shellrecharge
 import voluptuous as vol
 from aiohttp.client_exceptions import ClientError
 from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResult, section
+from homeassistant.data_entry_flow import section
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     TextSelector,
@@ -48,14 +48,14 @@ RECHARGE_SCHEMA = vol.Schema(
 )
 
 
-class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):  # type: ignore[misc, call-arg]
+class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for shell_recharge_ev."""
 
     VERSION = 3
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is None:

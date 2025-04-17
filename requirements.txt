@@ -1,19 +1,10 @@
 colorlog==6.9.0
 homeassistant==2024.1.0
-<<<<<<< HEAD
 mypy==1.15.0
 pre-commit==4.1.0
 pip>=21.0,<25.1
 pylint==3.3.4
 ruff==0.11.0
 shellrecharge==0.1.18
-=======
-mypy==1.13.0
-pip>=21.0,<24.3
-pre-commit==4.0.1
-pylint==3.3.1
-ruff==0.7.3
-shellrecharge==0.1.17
->>>>>>> 96a0583 (chore: lint)
 types-cachetools
 vulture==2.14

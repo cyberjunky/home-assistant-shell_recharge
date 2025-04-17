@@ -7,7 +7,7 @@ toggle_session:
       # Home Assistant does not support filtering on custom features
       supported_features:
         - climate.ClimateEntityFeature.TARGET_TEMPERATURE
-      #    - shell_recharge.ShellRechargeEntityFeature.TOGGLE_SESSION
+        # - shell_recharge.ShellRechargeEntityFeature.TOGGLE_SESSION
   fields:
     card:
       name: Card
@@ -17,7 +17,7 @@ toggle_session:
         entity:
           filter:
             integration: shell_recharge
-            #supported_features:
+            # supported_features:
             #  - climate.ClimateEntityFeature.TARGET_TEMPERATURE
             #  - shell_recharge.ShellRechargeEntityFeature.PAY_FOR_ELECTRICITY
     toggle:
