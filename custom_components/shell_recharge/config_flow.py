@@ -26,7 +26,7 @@ RECHARGE_SCHEMA = vol.Schema(
         vol.Optional("public"): section(
             vol.Schema(
                 {
-                    vol.Required("serial_number"): str,
+                    vol.Optional("serial_number"): str,
                 }
             ),
             {"collapsed": True},
@@ -34,10 +34,10 @@ RECHARGE_SCHEMA = vol.Schema(
         vol.Optional("private"): section(
             vol.Schema(
                 {
-                    vol.Required("email"): TextSelector(
+                    vol.Optional("email"): TextSelector(
                         TextSelectorConfig(type=TextSelectorType.EMAIL)
                     ),
-                    vol.Required("password"): TextSelector(
+                    vol.Optional("password"): TextSelector(
                         TextSelectorConfig(type=TextSelectorType.PASSWORD)
                     ),
                 }
@@ -62,11 +62,15 @@ class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_show_form(step_id="user", data_schema=RECHARGE_SCHEMA)
 
         try:
-            if user_input.get("public"):
+            if user_input.get("public") and user_input["public"].get("serial_number"):
                 unique_id = user_input["public"]["serial_number"]
                 api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
                 await api.location_by_id(unique_id)
-            elif user_input.get("private"):
+            elif (
+                user_input.get("private")
+                and user_input["private"].get("email")
+                and user_input["private"].get("password")
+            ):
                 unique_id = user_input["private"]["email"]
                 api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
                 user = await api.get_user(
