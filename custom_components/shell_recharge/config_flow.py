@@ -79,7 +79,10 @@ class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 )
                 user_input["private"]["api_key"] = user.cookies["tnm_api"]
             else:
-                return self.async_show_form(step_id="user", data_schema=RECHARGE_SCHEMA)
+                errors["base"] = "missing_data"
+                return self.async_show_form(
+                    step_id="user", data_schema=RECHARGE_SCHEMA, errors=errors
+                )
         except LoginFailedError:
             errors["base"] = "login_failed"
         except LocationEmptyError:
