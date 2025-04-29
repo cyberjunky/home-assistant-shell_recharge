@@ -113,7 +113,7 @@ class ShellRechargePrivateSensor(
                 for evse in charger._embedded.evses:  # pylint: disable=protected-access
                     if evse.evseId == self.evse_id:
                         return charger
-        raise HomeAssistantError()
+        raise HomeAssistantError("Charger not found in coordinator cache")
 
     def _get_evse(self) -> DetailedEvse:
         assets: DetailedAssets = self.coordinator.data
@@ -122,7 +122,7 @@ class ShellRechargePrivateSensor(
                 for evse in charger._embedded.evses:  # pylint: disable=protected-access
                     if evse.evseId == self.evse_id:
                         return evse
-        raise HomeAssistantError()
+        raise HomeAssistantError("Evse not found in coordinator cache")
 
     def _read_coordinator_data(self) -> None:
         """Read data from shell recharge charger."""
@@ -275,7 +275,7 @@ class ShellCardSensor(
             for card in assets.chargeTokens:
                 if card.uuid == self.card_id:
                     return card
-        raise HomeAssistantError()
+        raise HomeAssistantError("Charge card not found in coordinator cache")
 
 
 class ShellRechargeSensor(

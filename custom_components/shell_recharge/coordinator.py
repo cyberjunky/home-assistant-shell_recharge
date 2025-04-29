@@ -66,12 +66,12 @@ class ShellRechargeUserDataUpdateCoordinator(DataUpdateCoordinator):
 
 
 class ShellRechargePublicDataUpdateCoordinator(DataUpdateCoordinator):
-    """My custom coordinator."""
+    """Handles data updates for public chargers."""
 
     def __init__(
         self, hass: HomeAssistant, api: Api, serial_number: SerialNumber
     ) -> None:
-        """Initialize my coordinator."""
+        """Initialize coordinator."""
         super().__init__(
             hass,
             _LOGGER,

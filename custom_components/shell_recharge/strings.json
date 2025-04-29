@@ -5,7 +5,7 @@
     },
     "error": {
       "cannot_connect": "Failed to connect",
-      "empty_response": "Empty reponse from shellrecharge.com. Either invalid SERIAL-NUMBER or no data found for it.",
+      "empty_response": "Empty response from shellrecharge.com. Either invalid SERIAL-NUMBER or no data found for it.",
       "login_failed": "Login failed, please verify email and password are correct.",
       "unknown": "Unexpected error"
     },
