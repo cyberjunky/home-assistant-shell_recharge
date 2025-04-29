@@ -125,8 +125,12 @@ class ShellRechargePrivateSensor(
         raise HomeAssistantError()
 
     def _read_coordinator_data(self) -> None:
-        """Read data frem shell recharge charger."""
+        """Read data from shell recharge charger."""
+        self.charger = self._get_charger()
+        self.evse = self._get_evse()
+
         _LOGGER.debug(self.charger)
+        _LOGGER.debug(self.evse)
 
         try:
             if self.charger and self.evse:
