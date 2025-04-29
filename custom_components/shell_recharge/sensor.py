@@ -33,15 +33,17 @@ async def async_setup_entry(
 ) -> None:
     """Set up a shell_recharge_ev sensor entry."""
 
-    platform = entity_platform.async_get_current_platform()
-    platform.async_register_entity_service(
-        name="toggle_session",
-        schema={
-            vol.Required("card"): str,
-            vol.Required("toggle"): str,
-        },
-        func="toggle_session",
-    )
+    if not hass.data[DOMAIN].get("_service_registered"):
+        platform = entity_platform.async_get_current_platform()
+        platform.async_register_entity_service(
+            name="toggle_session",
+            schema={
+                vol.Required("card"): str,
+                vol.Required("toggle"): str,
+            },
+            func="toggle_session",
+        )
+        hass.data[DOMAIN]["_service_registered"] = True
 
     coordinator = hass.data[DOMAIN][entry.entry_id]
     entities = []
@@ -135,12 +137,7 @@ class ShellRechargePrivateSensor(
             if self.charger and self.evse:
                 self._attr_native_value = self.evse.status
                 self._attr_icon = "mdi:ev-plug-type2"
-                connector = self.evse.connectors[0]
                 extra_data = {
-                    "connector_power_type": connector.electricCurrentType,
-                    "connector_max_current": connector.maxCurrentInAmps,
-                    "connector_max_power": connector.maxPowerInWatts,
-                    "connector_phases": connector.numberOfPhases,
                     "evse_id": self.evse.evseId,
                     "evse_uuid": self.evse.id,
                     "city": self.charger.address.city,
@@ -159,6 +156,13 @@ class ShellRechargePrivateSensor(
                     "sharing": self.charger.sharing,
                     "vendor": self.charger.vendor,
                 }
+                if self.evse.connectors:
+                    connector = self.evse.connectors[0]
+                    extra_data["connector_power_type"] = connector.electricCurrentType
+                    extra_data["connector_max_current"] = connector.maxCurrentInAmps
+                    extra_data["connector_max_power"] = connector.maxPowerInWatts
+                    extra_data["connector_phases"] = connector.numberOfPhases
+
                 if self.evse.statusDetails.rfid:
                     extra_data["connected_card_rfid"] = self.evse.statusDetails.rfid
                 if self.evse.statusDetails.printedNumber:
