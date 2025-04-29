@@ -17,9 +17,7 @@ toggle_session:
         entity:
           filter:
             integration: shell_recharge
-            # supported_features:
-            #  - climate.ClimateEntityFeature.TARGET_TEMPERATURE
-            #  - shell_recharge.ShellRechargeEntityFeature.PAY_FOR_ELECTRICITY
+            device_class: aqi
     toggle:
       name: Action
       description: Whether you want to stop or start a session

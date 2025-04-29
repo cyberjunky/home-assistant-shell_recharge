@@ -8,7 +8,6 @@ from typing import Any
 
 import shellrecharge
 import voluptuous as vol
-from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -52,7 +51,7 @@ async def async_setup_entry(
         if isinstance(coordinator, ShellRechargePublicDataUpdateCoordinator):
             for evse in coordinator.data.evses:
                 evse_id = evse.uid
-                sensor: SensorEntity | BinarySensorEntity = ShellRechargeSensor(
+                sensor: SensorEntity = ShellRechargeSensor(
                     evse_id=evse_id, coordinator=coordinator
                 )
                 entities.append(sensor)
@@ -234,7 +233,7 @@ class ShellRechargePrivateSensor(
 
 class ShellCardSensor(
     CoordinatorEntity[ShellRechargeUserDataUpdateCoordinator],
-    BinarySensorEntity,
+    SensorEntity,
 ):
     """This sensor represent a charge card."""
 
@@ -248,7 +247,9 @@ class ShellCardSensor(
         self.card = self._get_card()
         self._attr_unique_id = self.card.uuid
         self._attr_attribution = "shellrecharge.com"
-        # self._attr_device_class = SensorDeviceClass.ENUM
+        # Set device class to something different from the chargers so we can filter in services.yaml
+        # This is only done because feature filtering for fields does not work.
+        self._attr_device_class = SensorDeviceClass.AQI
         self._attr_native_unit_of_measurement = None
         self._attr_state_class = None
         self._attr_has_entity_name = False
@@ -259,9 +260,7 @@ class ShellCardSensor(
             entry_type=None,
             manufacturer="Shell",
         )
-        self._attr_is_on = True
-        # self._attr_options = ["enabled"]
-        # self._attr_native_value = "enabled"
+        self._attr_native_value = 0
         self._attr_icon = "mdi:account-credit-card"
         self._attr_supported_features = ShellRechargeEntityFeature.PAY_FOR_ELECTRICITY
         self._attr_extra_state_attributes = {
