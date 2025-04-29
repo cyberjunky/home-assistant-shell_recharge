@@ -7,6 +7,7 @@
       "cannot_connect": "Failed to connect",
       "empty_response": "Empty response from shellrecharge.com. Either invalid SERIAL-NUMBER or no data found for it.",
       "login_failed": "Login failed, please verify email and password are correct.",
+      "missing_data": "Please provide either a serial number or email and password.",
       "unknown": "Unexpected error"
     },
     "step": {
