@@ -3,6 +3,7 @@
 import logging
 from asyncio.exceptions import CancelledError
 
+from aiohttp.client_exceptions import ClientError
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from shellrecharge import Api, Location, LocationEmptyError
@@ -50,6 +51,9 @@ class ShellRechargeUserDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed() from exc
         except TimeoutError as exc:
             _LOGGER.error("TimeoutError occurred while fetching user's for charger(s)")
+            raise UpdateFailed() from exc
+        except ClientError as exc:
+            _LOGGER.error("ClientError occurred while fetching user's for charger(s)")
             raise UpdateFailed() from exc
 
         return data
@@ -105,6 +109,12 @@ class ShellRechargePublicDataUpdateCoordinator(DataUpdateCoordinator):
         except TimeoutError as exc:
             _LOGGER.error(
                 "TimeoutError occurred while fetching data for charger(s) %s",
+                self.serial_number,
+            )
+            raise UpdateFailed() from exc
+        except ClientError as exc:
+            _LOGGER.error(
+                "ClientError occurred while fetching data for charger(s) %s",
                 self.serial_number,
             )
             raise UpdateFailed() from exc
