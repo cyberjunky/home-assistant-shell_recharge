@@ -68,6 +68,9 @@ automation:
             Charger {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }} from now.
 ```
 
+TIP: Check this nice article by Olof on Tweakers.net for more cool automations (Dutch)
+[Laad je auto slim op met Home Assistant](https://tweakers.net/reviews/12918/laad-je-auto-slim-op-met-home-assistant-zo-vind-je-altijd-een-vrije-plek.html)
+
 ## Debugging
 
 Add the relevant lines below to the `configuration.yaml`:
