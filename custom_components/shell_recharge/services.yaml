@@ -1,6 +1,6 @@
 toggle_session:
   name: Toggle charger session
-  description: Start/stop a charging session
+  description: Start/stop a charging session.
   target:
     entity:
       integration: shell_recharge
@@ -10,17 +10,14 @@ toggle_session:
         # - shell_recharge.ShellRechargeEntityFeature.TOGGLE_SESSION
   fields:
     card:
-      name: Card
-      description: Charge card to use for the session
+      name: Card RFID
+      description: RFID of the charge card to use for the session.
       required: True
       selector:
-        entity:
-          filter:
-            integration: shell_recharge
-            device_class: aqi
+        template:
     toggle:
       name: Action
-      description: Whether you want to stop or start a session
+      description: Whether you want to stop or start a session.
       example: start
       default: start
       required: True

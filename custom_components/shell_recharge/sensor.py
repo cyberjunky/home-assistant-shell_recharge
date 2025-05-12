@@ -9,11 +9,12 @@ from typing import Any
 import shellrecharge
 import voluptuous as vol
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.text import TextEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import entity_platform, entity_registry
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers import entity_platform
+from homeassistant.helpers.entity import DeviceInfo, Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from shellrecharge.models import Location
@@ -46,7 +47,7 @@ async def async_setup_entry(
         hass.data[DOMAIN]["_service_registered"] = True
 
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = []
+    entities: list[Entity] = []
     evse_id = ""
 
     if coordinator.data:
@@ -66,8 +67,8 @@ async def async_setup_entry(
                     )
                     entities.append(sensor)
             for card in coordinator.data.chargeTokens:
-                sensor = ShellCardSensor(card_id=card.uuid, coordinator=coordinator)
-                entities.append(sensor)
+                text = ShellCardText(card_id=card.uuid, coordinator=coordinator)
+                entities.append(text)
 
         async_add_entities(entities, True)
 
@@ -88,7 +89,7 @@ class ShellRechargePrivateSensor(
         self.charger = self._get_charger()
         self.evse = self._get_evse()
         self._attr_unique_id = f"{evse_id}-charger"
-        self._attr_attribution = "shellrecharge.com"
+        self._attr_attribution = "account.shellrecharge.com"
         self._attr_device_class = SensorDeviceClass.ENUM
         self._attr_native_unit_of_measurement = None
         self._attr_state_class = None
@@ -191,37 +192,8 @@ class ShellRechargePrivateSensor(
             )
 
         card = kwargs.get("card", "")
-        if not card:
-            raise ServiceValidationError(
-                translation_domain=DOMAIN,
-                translation_key="invalid_card",
-                translation_placeholders={"card": card},
-            )
-        registry = entity_registry.async_get(self.hass)
-        card_entity = registry.async_get(card)
-        if not card_entity:
-            raise ServiceValidationError(
-                translation_domain=DOMAIN,
-                translation_key="invalid_card",
-                translation_placeholders={"card": card},
-            )
-        uuid = card_entity.unique_id
 
-        # Solely doing it like this since I'm more confident in the uniqueness
-        # of the card's uuid than its rfid.
-        assets: DetailedAssets = self.coordinator.data
-        rfid = next(
-            iter([token.rfid for token in assets.chargeTokens if token.uuid == uuid]),
-            None,
-        )
-        if not rfid:
-            raise ServiceValidationError(
-                translation_domain=DOMAIN,
-                translation_key="invalid_card",
-                translation_placeholders={"card": card},
-            )
-
-        success = await self.coordinator.toggle_session(self.charger.id, rfid, toggle)
+        success = await self.coordinator.toggle_session(self.charger.id, card, toggle)
         if not success:
             raise HomeAssistantError(
                 translation_domain=DOMAIN,
@@ -229,15 +201,15 @@ class ShellRechargePrivateSensor(
                 translation_placeholders={
                     "action": toggle,
                     "charger": self.charger.id,
-                    "card": rfid,
+                    "card": card,
                 },
             )
         return True
 
 
-class ShellCardSensor(
+class ShellCardText(
     CoordinatorEntity[ShellRechargeUserDataUpdateCoordinator],
-    SensorEntity,
+    TextEntity,
 ):
     """This sensor represent a charge card."""
 
@@ -250,12 +222,7 @@ class ShellCardSensor(
         self.card_id = card_id
         self.card = self._get_card()
         self._attr_unique_id = self.card.uuid
-        self._attr_attribution = "shellrecharge.com"
-        # Set device class to something different from the chargers so we can filter in services.yaml
-        # This is only done because feature filtering for fields does not work.
-        self._attr_device_class = SensorDeviceClass.AQI
-        self._attr_native_unit_of_measurement = None
-        self._attr_state_class = None
+        self._attr_attribution = "account.shellrecharge.com"
         self._attr_has_entity_name = False
         self._attr_name = self.card.name
         self._attr_device_info = DeviceInfo(
@@ -264,13 +231,8 @@ class ShellCardSensor(
             entry_type=None,
             manufacturer="Shell",
         )
-        self._attr_native_value = 0
+        self._attr_native_value = self.card.rfid
         self._attr_icon = "mdi:account-credit-card"
-        self._attr_supported_features = ShellRechargeEntityFeature.PAY_FOR_ELECTRICITY
-        self._attr_extra_state_attributes = {
-            "rfid": self.card.rfid,
-            "printed_number": self.card.printedNumber,
-        }
 
     def _get_card(self) -> shellrecharge.usermodels.ChargeToken:
         assets: DetailedAssets = self.coordinator.data

@@ -32,9 +32,6 @@
     }
   },
   "exceptions": {
-    "invalid_card": {
-      "message": "Invalid card selected. Got {card}"
-    },
     "invalid_toggle": {
       "message": "Invalid toggle selected, expected ['start', 'stop']. Got {toggle}"
     },
