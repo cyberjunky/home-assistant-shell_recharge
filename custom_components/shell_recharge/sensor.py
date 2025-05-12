@@ -199,9 +199,9 @@ class ShellRechargePrivateSensor(
                 translation_domain=DOMAIN,
                 translation_key="session_toggle",
                 translation_placeholders={
-                    "action": toggle,
+                    "toggle": toggle,
                     "charger": self.charger.id,
-                    "card": card,
+                    "rfid": card,
                 },
             )
         return True
