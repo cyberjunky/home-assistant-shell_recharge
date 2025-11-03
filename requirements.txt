@@ -5,6 +5,6 @@ pre-commit==4.3.0
 pip>=21.0,<25.4
 pylint==4.0.2
 ruff==0.14.3
-shellrecharge==0.1.18
+shellrecharge==0.1.22
 types-cachetools
 vulture==2.14
