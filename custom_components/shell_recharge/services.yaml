@@ -1,0 +1,28 @@
+toggle_session:
+  name: Toggle charger session
+  description: Start/stop a charging session.
+  target:
+    entity:
+      integration: shell_recharge
+      # Home Assistant does not support filtering on custom features
+      supported_features:
+        - climate.ClimateEntityFeature.TARGET_TEMPERATURE
+        # - shell_recharge.ShellRechargeEntityFeature.TOGGLE_SESSION
+  fields:
+    card:
+      name: Card RFID
+      description: RFID of the charge card to use for the session.
+      required: True
+      selector:
+        template:
+    toggle:
+      name: Action
+      description: Whether you want to stop or start a session.
+      example: start
+      default: start
+      required: True
+      selector:
+        select:
+          options:
+            - start
+            - stop

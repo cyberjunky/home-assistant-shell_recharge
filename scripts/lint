@@ -6,4 +6,4 @@ cd "$(dirname "$0")/.."
 
 pre-commit install-hooks;
 pre-commit run --hook-stage manual --all-files;
-vulture . --min-confidence 65 --ignore-names policy
+vulture . --min-confidence 65 --ignore-names policy --exclude "*/.venv/*,*/venv/*"
