@@ -34,8 +34,10 @@ The Shell Recharge integration allows you to expose data from EV chargers on she
 
 ## Configuration
 
-Find the EV charger(s) you want to monitor here: https://shellrecharge.com/en-gb/find-a-charge-point look for the Serial number under details section.
+Find the EV charger(s) you want to monitor here: https://ui-map.shellrecharge.com look for the Serial number under details section.
 Then use Add device within Home Assistant and enter the Serial number in the form.
+
+NOTE: Sometimes added chargepoints get unavailable, most of the time this is because of serial number has changed, simply delete and re-add them with new serial.
 
 Example:
 
@@ -67,6 +69,9 @@ automation:
           message: >-
             Charger {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }} from now.
 ```
+
+TIP: Check this nice article by Olaf Weijers on Tweakers.net for more cool automations (Dutch)
+[Laad je auto slim op met Home Assistant](https://tweakers.net/reviews/12918/laad-je-auto-slim-op-met-home-assistant-zo-vind-je-altijd-een-vrije-plek.html)
 
 ## Debugging
 
