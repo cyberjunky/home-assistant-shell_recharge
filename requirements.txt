@@ -1,5 +1,5 @@
 colorlog==6.9.0
-homeassistant>=2024.11.0
+homeassistant==2025.1.4
 mypy==1.18.2
 pip>=21.0,<25.4
 pre-commit==4.3.0
