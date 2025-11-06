@@ -9,7 +9,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN
 from .coordinator import (
@@ -45,8 +44,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     api = shellrecharge.Api(websession=async_get_clientsession(hass))
 
+    coordinator: ShellRechargePublicDataUpdateCoordinator | ShellRechargeUserDataUpdateCoordinator
     if entry.data.get("public") and entry.data["public"].get("serial_number"):
-        coordinator: DataUpdateCoordinator = ShellRechargePublicDataUpdateCoordinator(
+        coordinator = ShellRechargePublicDataUpdateCoordinator(
             hass, api, entry.data["public"]["serial_number"]
         )
     else:

@@ -264,7 +264,7 @@ class ShellRechargeSensor(
         self._attr_device_class = SensorDeviceClass.ENUM
         self._attr_native_unit_of_measurement = None
         self._attr_state_class = None
-        if "suboperatorName" in self.location and self.location.suboperatorName:
+        if hasattr(self.location, "suboperatorName") and self.location.suboperatorName:
             operator = self.location.suboperatorName
         else:
             operator = self.location.operatorName

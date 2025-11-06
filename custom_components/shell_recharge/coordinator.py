@@ -15,7 +15,7 @@ from .const import DOMAIN, UPDATE_INTERVAL, SerialNumber
 _LOGGER = logging.getLogger(__name__)
 
 
-class ShellRechargeUserDataUpdateCoordinator(DataUpdateCoordinator):
+class ShellRechargeUserDataUpdateCoordinator(DataUpdateCoordinator[DetailedAssets]):
     """Handles data updates for private chargers."""
 
     def __init__(self, hass: HomeAssistant, api: User) -> None:
@@ -69,7 +69,7 @@ class ShellRechargeUserDataUpdateCoordinator(DataUpdateCoordinator):
         )
 
 
-class ShellRechargePublicDataUpdateCoordinator(DataUpdateCoordinator):
+class ShellRechargePublicDataUpdateCoordinator(DataUpdateCoordinator[Location]):
     """Handles data updates for public chargers."""
 
     def __init__(
