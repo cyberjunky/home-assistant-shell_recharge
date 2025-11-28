@@ -1,41 +1,45 @@
 {
   "customizations": {
+    "extensions": [
+      "charliermarsh.ruff",
+      "ms-python.python",
+      "github.vscode-pull-request-github",
+      "ryanluker.vscode-coverage-gutters",
+      "ms-python.vscode-pylance",
+      "GitHub.copilot"
+    ],
     "vscode": {
       "extensions": [
-        "esbenp.prettier-vscode",
+        "GitHub.copilot",
         "github.vscode-pull-request-github",
         "ms-python.python",
-        "ms-python.pylint",
         "ms-python.vscode-pylance",
         "ms-vscode.makefile-tools",
-        "ryanluker.vscode-coverage-gutters",
-        "visualstudioexptteam.vscodeintellicode"
+        "ryanluker.vscode-coverage-gutters"
       ],
       "settings": {
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "always",
+          "source.organizeImports": "always"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
-        "editor.tabSize": 4,
-        "files.eol": "\n",
+        "editor.rulers": [100],
         "files.trimTrailingWhitespace": true,
-        "python.analysis.autoSearchPaths": false,
-        "python.analysis.typeCheckingMode": "basic",
-        "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
-        "python.formatting.provider": "black",
-        "python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
-        "python.languageServer": "Pylance",
-        "python.pythonPath": "/usr/bin/python3",
-        "python.testing.pytestEnabled": true,
-        "python.testing.unittestEnabled": false
+        "python.formatting.provider": "ruff",
+        "python.pythonPath": "/usr/local/bin/python"
       }
     }
   },
   "features": {
-    "rust": "latest"
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {}
   },
   "forwardPorts": [8123],
-  "image": "mcr.microsoft.com/devcontainers/python:3-bullseye",
-  "name": "Shell Recharge",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12",
+  "name": "cyberjunky/home-assistant-shell_recharge",
   "portsAttributes": {
     "0-8122": {
       "label": "Auto-Forwarded - Other",

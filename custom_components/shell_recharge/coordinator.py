@@ -55,6 +55,17 @@ class ShellRechargeUserDataUpdateCoordinator(DataUpdateCoordinator[DetailedAsset
         except ClientError as exc:
             _LOGGER.error("ClientError occurred while fetching user's for charger(s)")
             raise UpdateFailed() from exc
+        except Exception as exc:
+            _LOGGER.error(
+                "Unexpected error occurred while fetching user's for charger(s): %s",
+                exc,
+                exc_info=True,
+            )
+            raise UpdateFailed() from exc
+
+        if data is None:
+            _LOGGER.error("API returned None data for user's charger(s)")
+            raise UpdateFailed("API returned None data")
 
         return data
 
@@ -118,5 +129,20 @@ class ShellRechargePublicDataUpdateCoordinator(DataUpdateCoordinator[Location]):
                 self.serial_number,
             )
             raise UpdateFailed() from exc
+        except Exception as exc:
+            _LOGGER.error(
+                "Unexpected error occurred while fetching data for charger(s) %s: %s",
+                self.serial_number,
+                exc,
+                exc_info=True,
+            )
+            raise UpdateFailed() from exc
+
+        if data is None:
+            _LOGGER.error(
+                "API returned None data for charger(s) %s",
+                self.serial_number,
+            )
+            raise UpdateFailed("API returned None data")
 
         return data
