@@ -280,8 +280,9 @@ class ShellRechargeSensor(
         self._read_coordinator_data()
 
     def _get_evse(self) -> Any:
-        if self.location:
-            for evse in self.location.evses:
+        location: Location = self.coordinator.data
+        if location:
+            for evse in location.evses:
                 if evse.uid == self.evse_id:
                     return evse
         return None
@@ -306,6 +307,7 @@ class ShellRechargeSensor(
     def _read_coordinator_data(self) -> None:
         """Read data from shell recharge ev."""
         evse = self._get_evse()
+        location: Location = self.coordinator.data
         _LOGGER.debug(evse)
 
         try:
@@ -314,15 +316,15 @@ class ShellRechargeSensor(
                 self._attr_icon = self._choose_icon(evse.connectors)
                 connector = evse.connectors[0]
                 extra_data = {
-                    "address": self.location.address.streetAndNumber,
-                    "city": self.location.address.city,
-                    "postal_code": self.location.address.postalCode,
-                    "country": self.location.address.country,
-                    "latitude": self.location.coordinates.latitude,
-                    "longitude": self.location.coordinates.longitude,
-                    "operator_name": self.location.operatorName,
-                    "suboperator_name": self.location.suboperatorName,
-                    "support_phonenumber": self.location.supportPhoneNumber,
+                    "address": location.address.streetAndNumber,
+                    "city": location.address.city,
+                    "postal_code": location.address.postalCode,
+                    "country": location.address.country,
+                    "latitude": location.coordinates.latitude,
+                    "longitude": location.coordinates.longitude,
+                    "operator_name": location.operatorName,
+                    "suboperator_name": location.suboperatorName,
+                    "support_phonenumber": location.supportPhoneNumber,
                     "tariff_startfee": connector.tariff.startFee,
                     "tariff_per_kwh": connector.tariff.perKWh,
                     "tariff_per_minute": connector.tariff.perMinute,
@@ -335,12 +337,12 @@ class ShellRechargeSensor(
                     "connector_ampere": connector.electricalProperties.amperage,
                     "connector_max_power": connector.electricalProperties.maxElectricPower,
                     "connector_fixed_cable": connector.fixedCable,
-                    "accessibility": self.location.accessibilityV2.status,
-                    "external_id": str(self.location.externalId),
+                    "accessibility": location.accessibilityV2.status,
+                    "external_id": str(location.externalId),
                     "evse_id": str(evse.evseId),
-                    "opentwentyfourseven": self.location.openTwentyFourSeven,
-                    # "opening_hours": self.location.openingHours,
-                    # "predicted_occupancies": self.location.predictedOccupancies,
+                    "opentwentyfourseven": location.openTwentyFourSeven,
+                    # "opening_hours": location.openingHours,
+                    # "predicted_occupancies": location.predictedOccupancies,
                 }
                 self._attr_extra_state_attributes = extra_data
         except AttributeError as err:
