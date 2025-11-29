@@ -38,7 +38,7 @@
     "ghcr.io/devcontainers/features/rust:1": {}
   },
   "forwardPorts": [8123],
-  "image": "mcr.microsoft.com/devcontainers/python:1-3.12",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.13",
   "name": "cyberjunky/home-assistant-shell_recharge",
   "portsAttributes": {
     "0-8122": {
