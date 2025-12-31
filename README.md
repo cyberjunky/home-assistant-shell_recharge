@@ -153,35 +153,38 @@ Alternatively:
 
 ## Configuration
 
-### Adding the Integration
+### Adding a Public Charger
 
 1. Navigate to **Settings** → **Devices & Services**
 2. Click **+ Add Integration**
 3. Search for **"Shell Recharge"**
-4. Enter your configuration:
-   - **Host**: Your inverter's IP address (e.g., `192.168.2.129`)
-   - **Port**: Default is `8899`
-   - **Serial Number**: Your inverter's serial number (e.g., `602696253`)
-   - **Name**: Friendly name prefix (default: "Omnik")
-   - **Update Interval**: Seconds between updates (default: `60`)
+4. Select **"Public Charger"**
+5. Enter the **Serial Number** of the charger
 
-The integration validates your connection and creates all sensors automatically. Disable sensors you don't need via **Settings** → **Devices & Services** → **Omnik Inverter** → click a sensor → cogwheel icon → "Enable entity" toggle.
+> [!TIP]
+> Find the Serial Number on [Shell Recharge Map](https://ui-map.shellrecharge.com) - click on a charger and look in the details section.
+
+The integration creates a sensor for the charger status with all location, tariff, and connector attributes.
+
+### Adding a Private Charger
+
+1. Navigate to **Settings** → **Devices & Services**
+2. Click **+ Add Integration**
+3. Search for **"Shell Recharge"**
+4. Select **"Private Charger"**
+5. Enter your Shell Recharge account credentials:
+   - **Email**: Your Shell Recharge account email
+   - **Password**: Your account password
+
+The integration discovers all chargers linked to your account and creates sensors for each EVSE with detailed attributes including connectivity, tariff, and charging status.
 
 ### Modifying Settings
 
-Change integration settings without restarting Home Assistant:
-
 1. Go to **Settings** → **Devices & Services**
-2. Find **Omnik Inverter**
-3. Click **Configure** icon
-4. Modify the scan interval
+2. Find **Shell Recharge**
+3. Click the **Configure** icon
+4. Modify settings as needed
 5. Click **Submit**
-
-Changes apply immediately. To enable/disable individual sensors, click on the sensor entity and toggle "Enable entity".
-
-## Configuration
-
-Then use Add device within Home Assistant and enter the Serial number in the form.
 
 ## Advanced Usage
 
@@ -451,9 +454,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-omnik_inverter.svg?style=for-the-badge
-[releases]: https://github.com/cyberjunky/home-assistant-omnik_inverter/releases
-[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-omnik_inverter.svg?style=for-the-badge
-[commits]: https://github.com/cyberjunky/home-assistant-omnik_inverter/commits/main
-[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-omnik_inverter.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
+[releases]: https://github.com/cyberjunky/home-assistant-shell_recharge/releases
+[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
+[commits]: https://github.com/cyberjunky/home-assistant-shell_recharge/commits/main
+[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-cyberjunky-blue.svg?style=for-the-badge
