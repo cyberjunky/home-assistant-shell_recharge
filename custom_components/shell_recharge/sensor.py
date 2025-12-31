@@ -94,7 +94,10 @@ class ShellRechargePrivateSensor(
         self._attr_native_unit_of_measurement = None
         self._attr_state_class = None
         self._attr_has_entity_name = False
-        self._attr_name = f"{self.charger.name} {self.charger.address.street} {self.charger.address.number} {self.charger.address.city}"
+        self._attr_name = (
+            f"{self.charger.name} {self.charger.address.street} "
+            f"{self.charger.address.number} {self.charger.address.city}"
+        )
         self._attr_device_info = DeviceInfo(
             name=self._attr_name,
             identifiers={(DOMAIN, self._attr_name)},
@@ -247,7 +250,7 @@ class ShellRechargeSensor(
     CoordinatorEntity[ShellRechargePublicDataUpdateCoordinator],
     SensorEntity,
 ):
-    """Main feature of this integration. This sensor represents an EVSE and shows its realtime availability status."""
+    """Sensor representing an EVSE and its realtime availability status."""
 
     def __init__(
         self,
@@ -269,7 +272,9 @@ class ShellRechargeSensor(
         else:
             operator = self.location.operatorName
         self._attr_has_entity_name = False
-        self._attr_name = f"{operator} {self.location.address.streetAndNumber} {self.location.address.city}"
+        self._attr_name = (
+            f"{operator} {self.location.address.streetAndNumber} {self.location.address.city}"
+        )
         self._attr_device_info = DeviceInfo(
             name=self._attr_name,
             identifiers={(DOMAIN, self._attr_name)},

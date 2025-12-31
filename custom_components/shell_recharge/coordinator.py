@@ -107,7 +107,7 @@ class ShellRechargePublicDataUpdateCoordinator(DataUpdateCoordinator[Location]):
             data = await self.api.location_by_id(self.serial_number)
         except LocationEmptyError as exc:
             _LOGGER.error(
-                "Error occurred while fetching data for charger(s) %s, not found, or serial is invalid",
+                "Error fetching charger(s) %s: not found or serial is invalid",
                 self.serial_number,
             )
             raise UpdateFailed() from exc
