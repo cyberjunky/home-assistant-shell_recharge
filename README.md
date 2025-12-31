@@ -119,7 +119,7 @@ All sensors are created by default and grouped under a single device for easy ma
 
 ## Screenshots
 
-![Chargers Overview](screenshots/overview.png) ![AC Charger Details](screenshots/attributes_ac.png) ![DC Charger Details](screenshots/attributes_dc.png)
+![Configure](screenshots/configure.png) ![Chargers Overview](screenshots/overview.png) ![AC Charger Details](screenshots/attributes_ac.png) ![DC Charger Details](screenshots/attributes_dc.png)
 
 ## Requirements
 
