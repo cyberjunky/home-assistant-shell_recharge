@@ -16,3 +16,17 @@ module = [
     "shellrecharge.*"
 ]
 ignore_missing_imports = true
+
+[tool.pylint.main]
+ignore-patterns = ["test_.*\\.py"]
+
+[tool.pylint.messages_control]
+disable = [
+    "import-error",           # shellrecharge is installed at runtime
+    "too-few-public-methods", # data classes often have few methods
+    "too-many-instance-attributes", # sensor entities need many attributes
+    "abstract-method",        # HA base classes have optional abstract methods
+]
+
+[tool.pylint.format]
+max-line-length = 120
