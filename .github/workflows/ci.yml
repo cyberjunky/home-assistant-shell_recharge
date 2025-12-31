@@ -48,7 +48,7 @@ jobs:
           cache: "pip"
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements_lint.txt
       # Following steps cannot run by pre-commit.ci as repo = local
       - name: Run mypy
         run: mypy custom_components/
