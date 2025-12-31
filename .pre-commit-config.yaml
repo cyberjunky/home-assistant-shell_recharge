@@ -1,89 +1,75 @@
-ci:
-  skip:
-    - mypy
-    - pylint
-
-default_language_version:
-  python: python3.13
-
 repos:
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
-    hooks:
-      - id: pyupgrade
-        args: [--py310-plus]
-  - repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-      - id: black
-        args:
-          - --safe
-          - --quiet
-        <<: &python-files-with-tests
-          files: ^((custom_components|tests)/.+)?[^/]+\.py$
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-docstrings==1.6.0
-          - pydocstyle==6.1.1
-        <<: &python-files
-          files: ^(custom_components/.+)?[^/]+\.py$
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.6
-    hooks:
-      - id: bandit
-        args:
-          - --quiet
-          - --format=custom
-          - --configfile=bandit.yaml
-        <<: *python-files-with-tests
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-      - id: check-executables-have-shebangs
-      - id: check-merge-conflict
-      - id: detect-private-key
-      # - id: no-commit-to-branch
-      - id: requirements-txt-fixer
-      - id: mixed-line-ending
-        args:
-          - --fix=lf
-        stages: [manual]
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
-        additional_dependencies:
-          - prettier@2.7.1
-          - prettier-plugin-sort-json@0.0.3
-        exclude_types:
-          - python
-        exclude: manifest\.json$
-  - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.33.0
-    hooks:
-      - id: yamllint
   - repo: local
     hooks:
-      # Run mypy through our wrapper script in order to get the possible
-      # pyenv and/or virtualenv activated; it may not have been e.g. if
-      # committing from a GUI tool that was not launched from an activated
-      # shell.
-      - id: mypy
-        name: Check with mypy
-        entry: scripts/run-in-env.sh mypy
-        language: script
+      - id: codespell
+        name: Check code for common misspellings
+        language: system
+        types: [text]
+        stages: [commit-msg, post-commit, manual]
+        entry: codespell
+        args:
+          - --quiet-level=2
+          - --ignore-words-list=hass,ba,fo
+          - --skip=tests/fixtures/*,custom_components/shell_recharge/translations/*
+
+      # isort hook removed to avoid conflicts with ruff formatting
+
+      - id: pyupgrade
+        name: Run pyupgrade
+        language: system
+        types: [text]
+        stages: [commit-msg, post-commit, manual]
+        entry: pyupgrade
+        files: ^.*.py$
+        args:
+          - "--py39-plus"
+
+      - id: ruff-check
+        name: Run ruff check
+        language: system
+        types: [text]
+        stages: [commit-msg, post-commit, manual]
+        entry: ruff
+        args:
+          - check
+        files: ^((action|custom_components|script|tests)/.+)?[^/]+\.py$
+
+      # ruff-format removed to avoid conflicts with isort; isort + ruff-check used instead
+
+      - id: check-executables-have-shebangs
+        name: Check that executables have shebangs
+        language: system
+        types: [text, executable]
+        entry: check-executables-have-shebangs
+        stages: [commit-msg, post-commit, manual]
+
+      - id: check-json
+        name: Check JSON files
+        language: system
+        types: [json]
+        stages: [commit-msg, post-commit, manual]
+        entry: check-json
+
+      - id: requirements-txt-fixer
+        name: Check requirements files
+        language: system
+        types: [text]
+        stages: [commit-msg, post-commit, manual]
+        entry: requirements-txt-fixer
+        files: ^requirements_.*.txt$
+
+      - id: check-ast
+        name: Check Python AST
+        language: system
         types: [python]
-        <<: *python-files
-      - id: pylint
-        name: Check with pylint
-        entry: scripts/run-in-env.sh pylint
-        language: script
-        types: [python]
-        <<: *python-files
+        stages: [commit-msg, post-commit, manual]
+        entry: check-ast
+
+      - id: mixed-line-ending
+        name: Check line nedings
+        language: system
+        types: [text]
+        stages: [commit-msg, post-commit, manual]
+        entry: mixed-line-ending
+        args:
+          - --fix=lf

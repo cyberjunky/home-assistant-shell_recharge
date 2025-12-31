@@ -1,4 +1,4 @@
-"""Sensors for the shell_recharge integration."""
+"""Sensors for the Shell Recharge integration."""
 
 from __future__ import annotations
 

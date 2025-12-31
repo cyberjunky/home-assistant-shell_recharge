@@ -1,4 +1,4 @@
-"""Constants for the shell_recharge integration."""
+"""Constants for the Shell Recharge integration."""
 
 from datetime import timedelta
 from enum import IntFlag

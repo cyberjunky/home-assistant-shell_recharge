@@ -1,4 +1,4 @@
-"""Shell Recharge data update coordinators."""
+"""Data update coordinator for Shell Recharge."""
 
 import logging
 from asyncio.exceptions import CancelledError

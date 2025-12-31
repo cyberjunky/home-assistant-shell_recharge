@@ -1,4 +1,4 @@
-"""The shell_recharge integration."""
+"""The Shell Recharge integration."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Config flow for shell_recharge integration."""
+"""Config flow for Shell Recharge integration."""
 
 from __future__ import annotations
 

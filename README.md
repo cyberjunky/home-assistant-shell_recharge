@@ -1,7 +1,3 @@
-# Shell Recharge
-
-The Shell Recharge integration allows you to expose data from EV chargers on shellrecharge.com to Home Assistant.
-
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
@@ -10,73 +6,395 @@ The Shell Recharge integration allows you to expose data from EV chargers on she
 [![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg?style=for-the-badge&logo=paypal)](https://www.paypal.me/cyberjunkynl/)
 [![Sponsor on GitHub](https://img.shields.io/badge/Sponsor-GitHub-red.svg?style=for-the-badge&logo=github)](https://github.com/sponsors/cyberjunky)
 
+# Shell Recharge Custom Integration
+
+The Shell Recharge integration allows you to expose data from EV chargers on shellrecharge.com to Home Assistant. It also has support for Private Charging.
+
 **This integration will set up the following platforms.**
 
-| Platform | Description                                                    |
-| -------- | -------------------------------------------------------------- |
-| `sensor` | Contains detailed information for each EV charger at location. |
+## Supported Features
 
-## Installation
+Monitor public EV chargers with a sensor that shows charger status:
 
-### HACS - Recommended
+- **Status**: "Available", "Unavailable", "Occupied", "Unknown"
 
-- Have [HACS](https://hacs.xyz) installed, this will allow you to easily manage and track updates.
-- Search for 'Shell Recharge' in HACS.
-- Click the Download button at the bottom of the page of the found integration.
-- Restart Home Assistant.
-- Under Services -> Devices & services click the Add Integration button, search for Shell Recharge.
-- Configure the integration using the instructions below.
+The sensor exposes the following attributes:
 
-### Manual - Without HACS
+| Attribute | Example Value |
+| --- | --- |
+| **Address** | |
+| Address | Example Street 1 |
+| City | Amsterdam |
+| Postal code | 1234 AB |
+| Country | NLD |
+| **Coordinates** | |
+| Latitude | 52.00 |
+| Longitude | 4.00 |
+| **Operator** | |
+| Operator name | BP Europe |
+| Suboperator name | |
+| Support phonenumber | |
+| **Tariff** | |
+| Start fee | 0 |
+| Per kWh | 0.79 |
+| Per minute | 0 |
+| Currency | EUR |
+| Updated | December 31, 2025 at 11:28:16 AM |
+| Updated by | Default |
+| Structure | Flat |
+| **Connector** | |
+| Power type | DC |
+| Voltage | 400 |
+| Ampere | 375 |
+| Max power | 150 |
+| Fixed cable | true |
+| **Accessibility** | |
+| Accessibility | Public |
+| Opentwentyfourseven | true |
+| **Identification** | |
+| External ID | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx |
+| Evse ID | NL*XXX*E00000*00*00 |
 
-- Copy the directory `custom_components/shell_recharge` to your `<config dir>/custom_components` directory.
-- Restart Home Assistant.
-- Configure the integration using the instructions below.
 
-## Configuration
+Monitor private EV chargers with a sensor that shows charger status:
 
-Find the EV charger(s) you want to monitor here: https://ui-map.shellrecharge.com look for the Serial number under details section.
-Then use Add device within Home Assistant and enter the Serial number in the form.
+- **Status**: "Available", "Unavailable", "Occupied", "Unknown", "Charging", "Faulted"
 
-NOTE: Sometimes added chargepoints get unavailable, most of the time this is because of serial number has changed, simply delete and re-add them with new serial.
+The sensor exposes the following attributes:
 
-Example:
+| Attribute | Example Value |
+| --- | --- |
+| **Charge Point** | |
+| Name | My Home Charger |
+| Serial | XXXXXXXXX |
+| Model | NewMotion |
+| Vendor | NewMotion |
+| UUID | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx |
+| Protocol | ocpp 1.6-j |
+| Sharing | private |
+| **Address** | |
+| Street | Example Street |
+| Number | 1 |
+| City | Amsterdam |
+| Zip | 1234 AB |
+| Country | NLD |
+| **Coordinates** | |
+| Latitude | 52.00 |
+| Longitude | 4.00 |
+| **Connectivity** | |
+| Connectivity | online |
+| First connection | 2024-01-15T10:30:00Z |
+| Last connection | 2025-12-31T11:00:00Z |
+| Last session | 2025-12-30T18:45:00Z |
+| Latest online status | true |
+| Last changed | 2025-12-31T11:00:00Z |
+| **Plug & Charge** | |
+| Capable | true |
+| **EVSE** | |
+| Evse ID | NL*XXX*E00000*00 |
+| Number | 1 |
+| Status | available |
+| Current type | ac |
+| Max power | 22000 |
+| **Connector** | |
+| Connector type | Type2 |
+| Electric current type | AC |
+| Max current in amps | 32 |
+| Max power in watts | 22000 |
+| Number of phases | 3 |
+| **Tariff** | |
+| Start fee | 0 |
+| Per kWh | 0.25 |
+| Per minute | 0 |
+| Currency | EUR |
+| Updated | 2025-12-31T10:00:00Z |
+| Updated by | TariffService |
+| Structure | Flat |
+| **Occupying Token** | |
+| RFID | XX-XXX-XXXXXX-X |
+| Printed number | XXXXXX |
+| Timestamp | 2025-12-30T18:45:00Z |
 
-<img width="299" alt="image" src="https://github.com/user-attachments/assets/4a6ecb02-2853-4455-90ec-8d4f41eb8b61" />
+All sensors are created by default and grouped under a single device for easy management.
 
 ## Screenshots
 
-| Chargers Overview                              | AC Charger Details                             | DC Charger Details                                |
-| ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
-| ![Chargers Overview](screenshots/overview.png) | ![AC Charger Details](screenshots/details.png) | ![DC Charger Details](screenshots/details_dc.png) |
+![Chargers Overview](screenshots/overview.png) ![AC Charger Details](screenshots/attributes_ac.png) ![DC Charger Details](screenshots/attributes_dc.png)
 
-## Automation
+## Requirements
 
-Example flow to get notified when a charger status changes to available
+For public EV chargers:
 
-```
+- **Charger Serial Number**
+
+Look up the Serial Number here: https://ui-map.shellrecharge.com (inside details section).
+
+For private EV chargers:
+
+- **Your Shell Recharge account details**
+
+## Installation
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cyberjunky&repository=home-assistant-shell_recharge&category=integration)
+
+Alternatively:
+
+1. Install [HACS](https://hacs.xyz) if not already installed
+2. Search for "Shell Recharge" in HACS
+3. Click **Download**
+4. Restart Home Assistant
+5. Add via Settings → Devices & Services
+
+### Manual Installation
+
+1. Copy the `custom_components/shell_recharge` folder to your `<config>/custom_components/` directory
+2. Restart Home Assistant
+3. Add via Settings → Devices & Services
+
+## Configuration
+
+### Adding the Integration
+
+1. Navigate to **Settings** → **Devices & Services**
+2. Click **+ Add Integration**
+3. Search for **"Shell Recharge"**
+4. Enter your configuration:
+   - **Host**: Your inverter's IP address (e.g., `192.168.2.129`)
+   - **Port**: Default is `8899`
+   - **Serial Number**: Your inverter's serial number (e.g., `602696253`)
+   - **Name**: Friendly name prefix (default: "Omnik")
+   - **Update Interval**: Seconds between updates (default: `60`)
+
+The integration validates your connection and creates all sensors automatically. Disable sensors you don't need via **Settings** → **Devices & Services** → **Omnik Inverter** → click a sensor → cogwheel icon → "Enable entity" toggle.
+
+### Modifying Settings
+
+Change integration settings without restarting Home Assistant:
+
+1. Go to **Settings** → **Devices & Services**
+2. Find **Omnik Inverter**
+3. Click **Configure** icon
+4. Modify the scan interval
+5. Click **Submit**
+
+Changes apply immediately. To enable/disable individual sensors, click on the sensor entity and toggle "Enable entity".
+
+## Configuration
+
+Then use Add device within Home Assistant and enter the Serial number in the form.
+
+## Advanced Usage
+
+### Automation Examples
+
+The following automation examples are based on the excellent article by Olaf Weijers on [Tweakers.net](https://tweakers.net/reviews/12918/laad-je-auto-slim-op-met-home-assistant-zo-vind-je-altijd-een-vrije-plek.html).
+
+#### Charger Availability Notification
+
+Get notified when a charger status changes to available:
+
+```yaml
 automation:
-  - alias: "Chargers Available"
+  - alias: "Charger Available"
     triggers:
       - trigger: state
         entity_id:
-          - sensor.some_charger_1
-          - sensor.some_charger_2
+          - sensor.charger_1
+          - sensor.charger_2
         from: "Occupied"
         to: "Available"
     actions:
-      - action: notify.your
-        data_template:
+      - action: notify.mobile_app_phone
+        data:
           message: >-
-            Charger {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }} from now.
+            Charger {{ trigger.to_state.attributes.friendly_name }} is now {{ trigger.to_state.state }}.
 ```
 
-TIP: Check this nice article by Olaf Weijers on Tweakers.net for more cool automations (Dutch)
-[Laad je auto slim op met Home Assistant](https://tweakers.net/reviews/12918/laad-je-auto-slim-op-met-home-assistant-zo-vind-je-altijd-een-vrije-plek.html)
+#### Charging Check on Arrival
 
-## Debugging
+Checks if your preferred charging spots are available when you arrive home with low battery. Notifies you of alternative spots if your favorites are occupied:
 
-Add the relevant lines below to the `configuration.yaml`:
+```yaml
+automation:
+  - alias: "Charging Check on Arrival"
+    triggers:
+      - entity_id: sensor.your_distance_to_home
+        below: 2500
+        trigger: numeric_state
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.car_battery_level
+        below: 50
+      - condition: state
+        entity_id: sensor.your_direction_of_travel
+        state: towards
+    actions:
+      - variables:
+          preferred_chargers:
+            - sensor.charger_1
+            - sensor.charger_2
+          alternative_chargers:
+            - sensor.charger_3
+            - sensor.charger_4
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ preferred_chargers | select('is_state', 'Available') | list | length > 0 }}
+            sequence: []
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ alternative_chargers | select('is_state', 'Available') | list | length > 0 }}
+            sequence:
+              - variables:
+                  available_chargers: >
+                    {{ alternative_chargers | select('is_state', 'Available') | list }}
+              - action: notify.mobile_app_phone
+                data:
+                  title: Preferred spots occupied
+                  message: >
+                    Available alternatives: {% for charger in available_chargers %}
+                    {{ states[charger].name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ preferred_chargers | select('is_state', 'Available') | list | length == 0 and
+                     alternative_chargers | select('is_state', 'Available') | list | length == 0 }}
+            sequence:
+              - action: notify.mobile_app_phone
+                data:
+                  title: No charging spots available
+                  message: All charging spots are currently occupied.
+```
+
+#### Waiting for Parking Spot
+
+Use an input_boolean helper to get notified when a spot becomes available. Create the helper in **Settings** → **Devices & Services** → **Helpers** → **Create helper** → **Toggle**:
+
+```yaml
+automation:
+  - alias: "Parking Spot Notification"
+    triggers:
+      - trigger: state
+        entity_id:
+          - sensor.charger_1
+          - sensor.charger_2
+          - sensor.charger_3
+          - sensor.charger_4
+        to: Available
+        from: Occupied
+    conditions:
+      - condition: state
+        entity_id: input_boolean.waiting_for_parking_spot
+        state: "on"
+    actions:
+      - action: notify.mobile_app_phone
+        data:
+          title: Parking spot available!
+          message: A charging spot is now free.
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.waiting_for_parking_spot
+```
+
+Optional dashboard tile that only appears when all spots are occupied:
+
+```yaml
+type: tile
+entity: input_boolean.waiting_for_parking_spot
+name: Wait for spot
+visibility:
+  - condition: state
+    entity: sensor.charger_1
+    state: Occupied
+  - condition: state
+    entity: sensor.charger_2
+    state: Occupied
+tap_action:
+  action: toggle
+```
+
+#### Charger Hogging Notification
+
+Get notified when all nearby chargers are occupied while your car is fully charged but still connected. Helps prevent blocking others from charging:
+
+```yaml
+automation:
+  - alias: "Charger Hogging Notification"
+    triggers:
+      - trigger: state
+        entity_id:
+          - sensor.charger_1
+          - sensor.charger_2
+          - sensor.charger_3
+          - sensor.charger_4
+      - trigger: state
+        entity_id: switch.car_charging
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: sensor.charger_1
+        state: Occupied
+      - condition: state
+        entity_id: sensor.charger_2
+        state: Occupied
+      - condition: state
+        entity_id: binary_sensor.car_charging_cable_connected
+        state: "on"
+      - condition: state
+        entity_id: switch.car_charging
+        state: "off"
+      - condition: state
+        entity_id: device_tracker.car_position
+        state: home
+      - condition: numeric_state
+        entity_id: sensor.car_battery_level
+        above: 75
+      - condition: time
+        after: "08:00:00"
+        before: "23:30:00"
+    actions:
+      - action: notify.mobile_app_phone
+        data:
+          title: All spots are occupied
+          message: Your car is fully charged. Consider moving it for others.
+      - delay:
+          minutes: 30
+    mode: single
+```
+
+#### Charging Status Check
+
+Verify that charging actually started after plugging in. Useful to catch forgotten badge swipes or loose plugs:
+
+```yaml
+automation:
+  - alias: "Charging Status Check"
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.car_charging_cable_connected
+        to: "on"
+        for:
+          minutes: 15
+    actions:
+      - if:
+          - condition: state
+            entity_id: switch.car_charging
+            state: "off"
+        then:
+          - action: notify.mobile_app_phone
+            data:
+              title: Did you forget something?
+              message: Your car is plugged in but not charging.
+```
+
+## Troubleshooting
+
+### Enable Debug Logging
+
+Add to `configuration.yaml`:
 
 ```yaml
 logger:
@@ -85,19 +403,57 @@ logger:
     custom_components.shell_recharge: debug
 ```
 
-<!---->
+Alternatively, enable debug logging via the UI in **Settings** → **Devices & Services** → **Shell Recharge** → **Enable debug logging**:
 
-## Contributions are welcome
+![Enable Debug Logging](screenshots/enabledebug.png)
 
-If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
+Then perform any steps to reproduce the issue and disable debug logging again. It will download the relevant log file automatically.
+
+## Common Issues
+
+**Chargepoints get unavailable**
+
+ - Sometimes added chargepoints get unavailable, most of the time this is because of serial number has changed, simply delete and re-add them with new serial.
+
+## Development
+
+Quick-start (from project root):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements_lint.txt
+./scripts/lint    # runs pre-commit + vulture
+# or: ruff check .
+# to auto-fix: ruff check . --fix
+```
+
+## 💖 Support This Project
+
+If you find this integration useful, please consider supporting its continued development:
+
+### 🌟 Ways to Support
+
+- **⭐ Star this repository** - Help others discover the project
+- **💰 Financial Support** - Contribute to development and hosting costs
+- **🐛 Report Issues** - Help improve stability and compatibility
+- **📖 Spread the Word** - Share with other solar enthusiasts
+
+### 💳 Financial Support Options
+
+[![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg?style=for-the-badge&logo=paypal)](https://www.paypal.me/cyberjunkynl/)
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor-GitHub-red.svg?style=for-the-badge&logo=github)](https://github.com/sponsors/cyberjunky)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
-[commits]: https://github.com/cyberjunky/home-assistant-shell_recharge/commits/main
-[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-%40cyberjunky-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
-[releases]: https://github.com/cyberjunky/home-assistant-shell_recharge/releases
-[sponsor-shield]: https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86
-[sponsor]: https://github.com/sponsors/cyberjunky
+[releases-shield]: https://img.shields.io/github/release/cyberjunky/home-assistant-omnik_inverter.svg?style=for-the-badge
+[releases]: https://github.com/cyberjunky/home-assistant-omnik_inverter/releases
+[commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-omnik_inverter.svg?style=for-the-badge
+[commits]: https://github.com/cyberjunky/home-assistant-omnik_inverter/commits/main
+[license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-omnik_inverter.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-cyberjunky-blue.svg?style=for-the-badge
