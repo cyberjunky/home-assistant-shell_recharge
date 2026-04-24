@@ -5,7 +5,6 @@ from __future__ import annotations
 from asyncio import CancelledError
 from typing import Any
 
-import shellrecharge
 import voluptuous as vol
 from aiohttp.client_exceptions import ClientError
 from homeassistant import config_entries
@@ -16,10 +15,12 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
-from shellrecharge import LocationEmptyError, LocationValidationError
 from shellrecharge.user import LoginFailedError
 
+from .api import ShellEvApi, ShellEvAuthError, ShellEvLocationNotFoundError
 from .const import DOMAIN
+
+import shellrecharge
 
 RECHARGE_SCHEMA = vol.Schema(
     {
@@ -27,6 +28,10 @@ RECHARGE_SCHEMA = vol.Schema(
             vol.Schema(
                 {
                     vol.Optional("serial_number"): str,
+                    vol.Optional("client_id"): str,
+                    vol.Optional("client_secret"): TextSelector(
+                        TextSelectorConfig(type=TextSelectorType.PASSWORD)
+                    ),
                 }
             ),
             {"collapsed": True},
@@ -51,7 +56,7 @@ RECHARGE_SCHEMA = vol.Schema(
 class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for shell_recharge_ev."""
 
-    VERSION = 3
+    VERSION = 4
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -62,33 +67,39 @@ class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_show_form(step_id="user", data_schema=RECHARGE_SCHEMA)
 
         try:
-            if user_input.get("public") and user_input["public"].get("serial_number"):
-                unique_id = user_input["public"]["serial_number"]
-                api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
+            pub = user_input.get("public") or {}
+            priv = user_input.get("private") or {}
+
+            if pub.get("serial_number") and pub.get("client_id") and pub.get("client_secret"):
+                unique_id = pub["serial_number"]
+                api = ShellEvApi(
+                    websession=async_get_clientsession(self.hass),
+                    client_id=pub["client_id"],
+                    client_secret=pub["client_secret"],
+                )
                 await api.location_by_id(unique_id)
-            elif (
-                user_input.get("private")
-                and user_input["private"].get("email")
-                and user_input["private"].get("password")
-            ):
-                unique_id = user_input["private"]["email"]
-                api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
-                user = await api.get_user(
+
+            elif priv.get("email") and priv.get("password"):
+                unique_id = priv["email"]
+                shell_api = shellrecharge.Api(websession=async_get_clientsession(self.hass))
+                user = await shell_api.get_user(
                     email=unique_id,
-                    pwd=user_input["private"]["password"],
+                    pwd=priv["password"],
                 )
                 user_input["private"]["api_key"] = user.cookies["tnm_api"]
+
             else:
                 errors["base"] = "missing_data"
                 return self.async_show_form(
                     step_id="user", data_schema=RECHARGE_SCHEMA, errors=errors
                 )
+
         except LoginFailedError:
             errors["base"] = "login_failed"
-        except LocationEmptyError:
+        except ShellEvAuthError:
+            errors["base"] = "auth_failed"
+        except ShellEvLocationNotFoundError:
             errors["base"] = "empty_response"
-        except LocationValidationError:
-            errors["base"] = "validation"
         except (ClientError, TimeoutError, CancelledError):
             errors["base"] = "cannot_connect"
 
@@ -96,7 +107,7 @@ class ShellRechargeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(unique_id)
             self._abort_if_unique_id_configured(updates=user_input)
             return self.async_create_entry(
-                title=f"Shell Recharge Charge Point ID {unique_id}",
+                title=f"Shell Recharge {unique_id}",
                 data=user_input,
             )
 

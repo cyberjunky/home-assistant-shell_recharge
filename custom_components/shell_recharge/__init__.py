@@ -10,6 +10,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
+from .api import ShellEvApi
 from .const import DOMAIN
 from .coordinator import (
     ShellRechargePublicDataUpdateCoordinator,
@@ -22,18 +23,20 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate old entry."""
-    _LOGGER.debug("Migrating configuration from %s", entry.version)
+    _LOGGER.debug("Migrating configuration from version %s", entry.version)
 
     if entry.version == 2:
         new_data = dict(entry.data)
         new_data["public"] = {"serial_number": new_data.pop("serial_number")}
-    else:
-        return True
+        hass.config_entries.async_update_entry(entry, data=new_data, version=3)
 
-    hass.config_entries.async_update_entry(entry, data=new_data, version=3)
+    if entry.version == 3:
+        # v3 public entries lack client_id/client_secret; keep data as-is.
+        # The coordinator will raise UpdateFailed with a helpful message when
+        # credentials are missing so the user knows to reconfigure.
+        hass.config_entries.async_update_entry(entry, version=4)
 
     _LOGGER.debug("Migration to configuration version %s successful", entry.version)
-
     return True
 
 
@@ -42,20 +45,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})
 
-    api = shellrecharge.Api(websession=async_get_clientsession(hass))
-
     coordinator: ShellRechargePublicDataUpdateCoordinator | ShellRechargeUserDataUpdateCoordinator
-    if entry.data.get("public") and entry.data["public"].get("serial_number"):
+
+    pub = entry.data.get("public") or {}
+    if pub.get("serial_number"):
+        api = ShellEvApi(
+            websession=async_get_clientsession(hass),
+            client_id=pub.get("client_id", ""),
+            client_secret=pub.get("client_secret", ""),
+        )
         coordinator = ShellRechargePublicDataUpdateCoordinator(
-            hass, api, entry.data["public"]["serial_number"]
+            hass, api, pub["serial_number"]
         )
     else:
+        priv = entry.data.get("private") or {}
+        shell_api = shellrecharge.Api(websession=async_get_clientsession(hass))
         coordinator = ShellRechargeUserDataUpdateCoordinator(
             hass,
-            await api.get_user(
-                entry.data["private"]["email"],
-                entry.data["private"]["password"],
-                entry.data["private"].get("api_key"),
+            await shell_api.get_user(
+                priv["email"],
+                priv["password"],
+                priv.get("api_key"),
             ),
         )
 

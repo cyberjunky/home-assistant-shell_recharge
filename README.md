@@ -125,13 +125,17 @@ All sensors are created by default and grouped under a single device for easy ma
 
 For public EV chargers:
 
-- **Charger Serial Number**
+- **Shell Developer API credentials** — register a free account at [developer.shell.com](https://developer.shell.com) and create an application to obtain a **Client ID** and **Client Secret**.
+- **Location external ID** (the UUID-format serial number of the charger, e.g. `0F80EA26-5F5D-4728-B5E5-268BE55B9191`). You can find this on the [Shell Recharge map](https://shellrecharge.com/en-gb/solutions/for-drivers/driver-map).
 
-Look up the Serial Number here: https://ui-map.shellrecharge.com (inside details section).
+> [!NOTE]
+> The integration now uses the **official Shell EV API** (`api.shell.com/ev/v1`).
+> The old unofficial map API (`ui-map.shellrecharge.com`) has been discontinued.
+> Developer credentials are required but registration is free.
 
 For private EV chargers:
 
-- **Your Shell Recharge account details**
+- **Your Shell Recharge account details** (email and password)
 
 ## Installation
 
@@ -159,10 +163,14 @@ Alternatively:
 2. Click **+ Add Integration**
 3. Search for **"Shell Recharge"**
 4. Select **"Public Charger"**
-5. Enter the **Serial Number** of the charger
+5. Enter:
+   - **Location external ID** (UUID-format serial number)
+   - **Client ID** from developer.shell.com
+   - **Client Secret** from developer.shell.com
 
 > [!TIP]
-> Find the Serial Number on [Shell Recharge Map](https://ui-map.shellrecharge.com) - click on a charger and look in the details section.
+> Register for free API credentials at [developer.shell.com](https://developer.shell.com).
+> The location external ID is the UUID identifier for a charger location (e.g. `0F80EA26-5F5D-4728-B5E5-268BE55B9191`).
 
 The integration creates a sensor for the charger status with all location, tariff, and connector attributes.
 

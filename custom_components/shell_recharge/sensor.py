@@ -17,13 +17,13 @@ from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity import DeviceInfo, Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from shellrecharge.models import Location
 from shellrecharge.usermodels import DetailedAssets, DetailedChargePoint, DetailedEvse
 
 from . import (
     ShellRechargePublicDataUpdateCoordinator,
     ShellRechargeUserDataUpdateCoordinator,
 )
+from .api import EVSE_STATUS_OPTIONS, Location
 from .const import DOMAIN, EvseId, ShellRechargeEntityFeature
 
 _LOGGER = logging.getLogger(__name__)
@@ -263,11 +263,11 @@ class ShellRechargeSensor(
         self.coordinator = coordinator
         self.location: Location = self.coordinator.data
         self._attr_unique_id = f"{evse_id}-charger"
-        self._attr_attribution = "shellrecharge.com"
+        self._attr_attribution = "api.shell.com"
         self._attr_device_class = SensorDeviceClass.ENUM
         self._attr_native_unit_of_measurement = None
         self._attr_state_class = None
-        if hasattr(self.location, "suboperatorName") and self.location.suboperatorName:
+        if getattr(self.location, "suboperatorName", None):
             operator = self.location.suboperatorName
         else:
             operator = self.location.operatorName
@@ -281,7 +281,7 @@ class ShellRechargeSensor(
             entry_type=None,
             manufacturer=operator,
         )
-        self._attr_options = list(typing.get_args(shellrecharge.models.Status))
+        self._attr_options = EVSE_STATUS_OPTIONS
         self._read_coordinator_data()
 
     def _get_evse(self) -> Any:
@@ -292,7 +292,7 @@ class ShellRechargeSensor(
                     return evse
         return None
 
-    def _choose_icon(self, connectors: list[shellrecharge.models.Connector]) -> str:
+    def _choose_icon(self, connectors: list) -> str:
         iconmap: dict[str, str] = {
             "Type1": "mdi:ev-plug-type1",
             "Type2": "mdi:ev-plug-type2",
@@ -319,8 +319,8 @@ class ShellRechargeSensor(
             if evse:
                 self._attr_native_value = evse.status
                 self._attr_icon = self._choose_icon(evse.connectors)
-                connector = evse.connectors[0]
-                extra_data = {
+                connector = evse.connectors[0] if evse.connectors else None
+                extra_data: dict[str, Any] = {
                     "address": location.address.streetAndNumber,
                     "city": location.address.city,
                     "postal_code": location.address.postalCode,
@@ -330,25 +330,28 @@ class ShellRechargeSensor(
                     "operator_name": location.operatorName,
                     "suboperator_name": location.suboperatorName,
                     "support_phonenumber": location.supportPhoneNumber,
-                    "tariff_startfee": connector.tariff.startFee,
-                    "tariff_per_kwh": connector.tariff.perKWh,
-                    "tariff_per_minute": connector.tariff.perMinute,
-                    "tariff_currency": connector.tariff.currency,
-                    "tariff_updated": connector.tariff.updated,
-                    "tariff_updated_by": connector.tariff.updatedBy,
-                    "tariff_structure": connector.tariff.structure,
-                    "connector_power_type": connector.electricalProperties.powerType,
-                    "connector_voltage": connector.electricalProperties.voltage,
-                    "connector_ampere": connector.electricalProperties.amperage,
-                    "connector_max_power": connector.electricalProperties.maxElectricPower,
-                    "connector_fixed_cable": connector.fixedCable,
                     "accessibility": location.accessibilityV2.status,
                     "external_id": str(location.externalId),
                     "evse_id": str(evse.evseId),
                     "opentwentyfourseven": location.openTwentyFourSeven,
-                    # "opening_hours": location.openingHours,
-                    # "predicted_occupancies": location.predictedOccupancies,
                 }
+                if connector:
+                    extra_data.update(
+                        {
+                            "tariff_startfee": connector.tariff.startFee,
+                            "tariff_per_kwh": connector.tariff.perKWh,
+                            "tariff_per_minute": connector.tariff.perMinute,
+                            "tariff_currency": connector.tariff.currency,
+                            "tariff_updated": connector.tariff.updated,
+                            "tariff_updated_by": connector.tariff.updatedBy,
+                            "tariff_structure": connector.tariff.structure,
+                            "connector_power_type": connector.electricalProperties.powerType,
+                            "connector_voltage": connector.electricalProperties.voltage,
+                            "connector_ampere": connector.electricalProperties.amperage,
+                            "connector_max_power": connector.electricalProperties.maxElectricPower,
+                            "connector_fixed_cable": connector.fixedCable,
+                        }
+                    )
                 self._attr_extra_state_attributes = extra_data
         except AttributeError as err:
             _LOGGER.error(err)
