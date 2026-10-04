@@ -8,6 +8,13 @@
 
 # Shell Recharge Custom Integration
 
+> [!CAUTION]
+> **This integration is deprecated and no longer maintained.**
+>
+> Shell changed their API and removed all third-party chargers from the Shell Recharge app and map. The data this integration was built to expose is no longer available, so it can no longer work as intended.
+>
+> No further updates or fixes will be released. Please remove the integration from Home Assistant and HACS. The documentation below is kept for reference only.
+
 The Shell Recharge integration allows you to expose data from EV chargers on shellrecharge.com to Home Assistant. It also has support for Private Charging.
 
 **This integration will set up the following platforms.**
@@ -467,4 +474,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [commits-shield]: https://img.shields.io/github/commit-activity/y/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
 [commits]: https://github.com/cyberjunky/home-assistant-shell_recharge/commits/main
 [license-shield]: https://img.shields.io/github/license/cyberjunky/home-assistant-shell_recharge.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-cyberjunky-blue.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/status-deprecated-red.svg?style=for-the-badge
